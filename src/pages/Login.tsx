@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { AxiosError } from "axios";
@@ -22,7 +22,7 @@ interface LoginResponse {
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setAuth, user } = useAuthStore();
+  const { setAuth } = useAuthStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,12 +31,7 @@ const Login = () => {
   const [shake, setShake] = useState(false);
   const [lockout, setLockout] = useState<number | null>(null);
 
-  // 🔐 Redirect if already logged in
-  useEffect(() => {
-    if (user) {
-      navigate(ROLE_REDIRECT[user.role] ?? "/dashboard");
-    }
-  }, [user, navigate]);
+  // REDIRECT LOGIC REMOVED: Handled by PublicRoute and ProtectedRoute to avoid loops
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -96,10 +91,15 @@ const Login = () => {
           error.response?.data?.title ||
           "Your account is not verified. Check your email for the verification link.";
         toast.info(detail, { autoClose: 10000 });
+      } else if (!error.response) {
+        // Network error (server down)
+        toast.error(
+          "Cannot connect to server. Please check your internet or try again later.",
+        );
       } else {
         const fallback = "Invalid email or password";
         toast.error(
-          error.response?.data.detail ||
+          error.response?.data?.detail ||
             error.response?.data?.title ||
             fallback,
         );

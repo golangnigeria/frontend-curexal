@@ -1,15 +1,19 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 
-export const ProtectedRoute = ({ children }: { children?: React.ReactNode }) => {
-  const { isAuthenticated, hasHydrated } = useAuthStore();
+export const ProtectedRoute = ({
+  children,
+}: {
+  children?: React.ReactNode;
+}) => {
+  const { isAuthenticated, hasHydrated, user } = useAuthStore();
 
   // ⛔ Wait until Zustand finishes hydrating
   if (!hasHydrated) {
     return null; // or loading spinner
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
   }
 

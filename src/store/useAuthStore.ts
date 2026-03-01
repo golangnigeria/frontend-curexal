@@ -39,7 +39,7 @@ export const useAuthStore = create<AuthState>()(
           requiresOnboarding,
         }),
 
-      setToken: (token) => set({ token }),
+      setToken: (token) => set({ token, isAuthenticated: !!token }),
 
       logout: () =>
         set({

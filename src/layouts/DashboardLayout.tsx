@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, Navigate, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import {
   LogOut,
@@ -31,7 +31,11 @@ const DashboardLayout = () => {
   };
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return (
+      <div className="flex items-center justify-center h-screen bg-surface dark:bg-slate-900">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    );
   }
 
   // Base navigation styling class

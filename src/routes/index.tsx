@@ -71,6 +71,38 @@ export const AppRoutes = () => {
 
         {/* Doctor Only */}
         <Route path="prescriptions" element={<DoctorPrescriptions />} />
+
+        {/* Placeholder Routes for Other Roles to prevent redirect loops */}
+        <Route
+          path="admin/dashboard"
+          element={<div className="p-8">Admin Dashboard - Coming Soon</div>}
+        />
+        <Route
+          path="super-admin/dashboard"
+          element={
+            <div className="p-8">Super Admin Dashboard - Coming Soon</div>
+          }
+        />
+        <Route
+          path="pharmacy/dashboard"
+          element={<div className="p-8">Pharmacy Dashboard - Coming Soon</div>}
+        />
+        <Route
+          path="laboratory/dashboard"
+          element={
+            <div className="p-8">Laboratory Dashboard - Coming Soon</div>
+          }
+        />
+        <Route
+          path="logistics/dashboard"
+          element={<div className="p-8">Logistics Dashboard - Coming Soon</div>}
+        />
+        <Route
+          path="care-agent/dashboard"
+          element={
+            <div className="p-8">Care Agent Dashboard - Coming Soon</div>
+          }
+        />
       </Route>
 
       {/* Catch all */}
