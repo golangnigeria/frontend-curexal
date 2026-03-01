@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface User {
   id: string;
@@ -14,9 +14,12 @@ interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   requiresOnboarding: boolean;
+  hasHydrated: boolean; // 👈 ADD THIS
+
   setAuth: (user: User, token: string, requiresOnboarding?: boolean) => void;
   setToken: (token: string) => void;
   logout: () => void;
+  setHasHydrated: (state: boolean) => void; // 👈 ADD
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -26,30 +29,38 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       isAuthenticated: false,
       requiresOnboarding: false,
-      
-      setAuth: (user, token, requiresOnboarding = false) => set({ 
-        user, 
-        token, 
-        isAuthenticated: true,
-        requiresOnboarding 
-      }),
-      
+      hasHydrated: false,
+
+      setAuth: (user, token, requiresOnboarding = false) =>
+        set({
+          user,
+          token,
+          isAuthenticated: true,
+          requiresOnboarding,
+        }),
+
       setToken: (token) => set({ token }),
-      
-      logout: () => set({ 
-        user: null, 
-        token: null, 
-        isAuthenticated: false,
-        requiresOnboarding: false
-      }),
+
+      logout: () =>
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          requiresOnboarding: false,
+        }),
+
+      setHasHydrated: (state) => set({ hasHydrated: state }),
     }),
     {
-      name: 'auth-storage', // name of item in the storage (must be unique)
-      partialize: (state) => ({ 
-        user: state.user, 
-        token: state.token, 
-        isAuthenticated: state.isAuthenticated 
+      name: "auth-storage",
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true); // 👈 MARK HYDRATED
+      },
     }
   )
 );
