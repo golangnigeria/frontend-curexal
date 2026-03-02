@@ -81,28 +81,28 @@ const VerifyEmail = () => {
   }, [token, navigate, setAuth]);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-surface dark:bg-slate-900 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-slate-50 px-4 sm:px-6 lg:px-8">
       {/* Logo & Branding */}
       <div className="flex flex-col items-center mb-8">
         <img
           src={logoUrl}
           alt="Curexal Logo"
-          className="h-20 w-20 rounded-xl object-cover shadow-md border border-slate-200 dark:border-slate-800"
+          className="h-20 w-20 rounded-xl object-cover shadow-md border border-slate-100"
         />
-        <h1 className="mt-4 text-primary-600 dark:text-primary-400 font-bold text-3xl sm:text-4xl">
+        <h1 className="mt-4 text-primary-600 font-bold text-3xl sm:text-4xl">
           Curexal
         </h1>
       </div>
 
       {/* Verification Card */}
-      <div className="w-full max-w-md bg-background dark:bg-slate-950 py-10 px-8 shadow-xl rounded-2xl border border-border dark:border-slate-800 text-center transition-all">
+      <div className="w-full max-w-md bg-white py-10 px-8 shadow-xl rounded-2xl border border-slate-100 text-center transition-all">
         {status === "loading" && (
           <div className="flex flex-col items-center animate-pulse">
             <Loader2 className="w-16 h-16 text-primary-500 animate-spin mb-4" />
-            <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
+            <h2 className="text-xl font-semibold text-slate-800">
               Verifying your email...
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">
+            <p className="text-slate-500 mt-2 text-sm">
               Please wait a moment while we check your verification link.
             </p>
           </div>
@@ -111,10 +111,10 @@ const VerifyEmail = () => {
         {status === "success" && (
           <div className="flex flex-col items-center">
             <CheckCircle2 className="w-16 h-16 text-green-500 mb-4" />
-            <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
+            <h2 className="text-xl font-semibold text-slate-800">
               Email Verified!
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">
+            <p className="text-slate-500 mt-2 text-sm">
               Your account is now verified. Redirecting you to your dashboard...
             </p>
           </div>
@@ -123,12 +123,10 @@ const VerifyEmail = () => {
         {status === "error" && (
           <div className="flex flex-col items-center">
             <XCircle className="w-16 h-16 text-red-500 mb-4" />
-            <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
+            <h2 className="text-xl font-semibold text-slate-800">
               Verification Failed
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-2 mb-6 text-sm">
-              {errorMessage}
-            </p>
+            <p className="text-slate-500 mt-2 mb-6 text-sm">{errorMessage}</p>
             <Link
               to="/login"
               className="w-full flex justify-center items-center py-2.5 px-4 rounded-md text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 transition"

@@ -111,7 +111,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
 
       {/* Scrollable Container */}
@@ -121,17 +121,17 @@ const Login = () => {
           <img
             src={logoUrl}
             alt="Curexal Logo"
-            className="h-12 w-12 rounded-lg object-cover shadow-sm border border-slate-800"
+            className="h-12 w-12 rounded-lg object-cover shadow-sm border border-slate-100"
           />
-          <h1 className="mt-2 text-primary-400 font-bold text-2xl">Curexal</h1>
-          <p className="text-xs text-slate-500 mt-1 text-center max-w-xs px-4">
+          <h1 className="mt-2 text-primary-600 font-bold text-2xl">Curexal</h1>
+          <p className="text-xs text-slate-400 mt-1 text-center max-w-xs px-4">
             Sign in to access your digital health dashboard.
           </p>
         </div>
 
         {/* Login Form Card */}
         <div
-          className={`w-full max-w-md bg-slate-950 py-6 px-5 shadow-xl rounded-xl border border-slate-800 transition-all ${
+          className={`w-full max-w-md bg-white py-6 px-5 shadow-xl rounded-xl border border-slate-100 transition-all ${
             shake ? "animate-shake" : ""
           }`}
         >
@@ -150,7 +150,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-9 rounded-md border py-2 px-3 text-xs bg-slate-900 border-slate-700 focus:ring-1 focus:ring-primary-500 focus:outline-none transition text-slate-200"
+                  className="w-full pl-9 rounded-md border py-2 px-3 text-xs bg-slate-50 border-slate-200 focus:ring-1 focus:ring-primary-500 focus:outline-none transition text-slate-800"
                 />
               </div>
             </div>
@@ -168,7 +168,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-9 rounded-md border py-2 px-3 text-xs bg-slate-900 border-slate-700 focus:ring-1 focus:ring-primary-500 focus:outline-none transition text-slate-200"
+                  className="w-full pl-9 pr-9 rounded-md border py-2 px-3 text-xs bg-slate-50 border-slate-200 focus:ring-1 focus:ring-primary-500 focus:outline-none transition text-slate-800"
                 />
                 <button
                   type="button"
@@ -199,14 +199,14 @@ const Login = () => {
           </form>
 
           {/* Links */}
-          <div className="mt-4 flex flex-col sm:flex-row justify-between text-[10px] text-slate-500">
+          <div className="mt-4 flex flex-col sm:flex-row justify-between text-[10px] text-slate-400">
             <Link
               to="/forgot-password"
-              className="hover:text-primary-400 transition mb-1 sm:mb-0"
+              className="hover:text-primary-600 transition mb-1 sm:mb-0"
             >
               Forgot password?
             </Link>
-            <Link to="/register" className="hover:text-primary-400 transition">
+            <Link to="/register" className="hover:text-primary-600 transition">
               Don’t have an account? Sign up
             </Link>
           </div>

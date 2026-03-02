@@ -2,213 +2,236 @@ import { Link } from "react-router-dom";
 import {
   ArrowRight,
   Stethoscope,
-  Activity,
   HeartPulse,
   LayoutDashboard,
+  ShieldCheck,
+  Zap,
 } from "lucide-react";
 import logoUrl from "../assets/img/logo.jpg";
 import Navbar from "../components/ui/Navbar";
 import { useAuthStore } from "../store/useAuthStore";
+import { motion } from "framer-motion";
 
 const Landing = () => {
   const { user } = useAuthStore();
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+      },
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 transition-colors duration-300 font-sans selection:bg-primary-900">
+    <div className="min-h-screen bg-background text-slate-900 font-sans selection:bg-primary-100">
       <Navbar />
+
       {/* Hero Section */}
-      <section className="relative pt-24 pb-12 lg:pt-48 lg:pb-32 overflow-hidden">
-        {/* Abstract Background Shapes */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full overflow-hidden -z-10 pointer-events-none">
-          <div className="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-primary-900/20 blur-3xl" />
-          <div className="absolute top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-accent-900/20 blur-3xl" />
+      <section className="relative pt-32 pb-20 lg:pt-56 lg:pb-32 overflow-hidden">
+        {/* Subtle Background Glows */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full overflow-hidden -z-10 pointer-events-none opacity-50">
+          <div className="absolute top-[-10%] left-[20%] w-[40%] h-[40%] rounded-full bg-primary-100/40 blur-[120px] animate-pulse" />
+          <div className="absolute bottom-[20%] right-[10%] w-[30%] h-[30%] rounded-full bg-indigo-100/30 blur-[100px]" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-900/30 text-accent-300 text-xs font-medium mb-6 border border-accent-800">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-500"></span>
-            </span>
-            Next-Gen Health System Now Live
-          </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-4 leading-tight">
-            The Future of <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">
-              Intelligent Healthcare
-            </span>
-          </h1>
-          <p className="mt-2 max-w-2xl text-base md:text-xl text-slate-400 mx-auto mb-8 leading-relaxed">
-            Curexal unites patients, doctors, labs, and pharmacies into one
-            seamless, AI-integrated digital ecosystem.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-3">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="max-w-7xl mx-auto px-6 relative z-10 text-center"
+        >
+          <motion.div
+            variants={itemVariants}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider mb-8 border border-slate-200"
+          >
+            <Zap size={12} className="text-primary-600" />
+            Empowering Modern Healthcare
+          </motion.div>
+
+          <motion.h1
+            variants={itemVariants}
+            className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-slate-900 mb-8 leading-[0.9]"
+          >
+            Digital care <br />
+            <span className="text-primary-600">redefined.</span>
+          </motion.h1>
+
+          <motion.p
+            variants={itemVariants}
+            className="max-w-2xl text-lg md:text-xl text-slate-500 mx-auto mb-12 leading-relaxed font-medium"
+          >
+            Curexal is the unified operating system for healthcare. Connecting
+            patients, doctors, and labs in one intelligent ecosystem.
+          </motion.p>
+
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row justify-center gap-4"
+          >
             {user ? (
               <Link
                 to="/dashboard"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-bold text-white bg-primary-600 hover:bg-primary-500 rounded-full shadow-xl shadow-primary-500/20 transition-all hover:scale-105"
+                className="h-14 px-8 bg-slate-900 text-white font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-2xl active:scale-95"
               >
-                <LayoutDashboard className="mr-2 h-4 w-4" />
-                Go to Dashboard
+                <LayoutDashboard size={20} />
+                Manage Dashboard
               </Link>
             ) : (
               <>
                 <Link
                   to="/register"
-                  className="inline-flex items-center justify-center px-6 py-3 text-sm font-bold text-white bg-primary-600 hover:bg-primary-500 rounded-full shadow-xl shadow-primary-500/20 transition-all hover:scale-105"
+                  className="h-14 px-10 bg-primary-600 text-white font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-primary-500 transition-all shadow-xl shadow-primary-600/20 active:scale-95"
                 >
-                  Join as a Patient
+                  Start Your Journey
+                  <ArrowRight size={20} />
                 </Link>
                 <Link
-                  to="/register?role=doctor"
-                  className="inline-flex items-center justify-center px-6 py-3 text-sm font-bold text-slate-200 bg-slate-900 border border-slate-700 hover:border-primary-500 hover:text-primary-400 rounded-full transition-all"
+                  to="/about"
+                  className="h-14 px-10 bg-white border border-slate-200 text-slate-600 font-bold rounded-2xl flex items-center justify-center hover:bg-slate-50 transition-all active:scale-95"
                 >
-                  Partner with Us
+                  Learn More
                 </Link>
               </>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Stats Section */}
-      <section className="border-y border-slate-800 bg-slate-900/50 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center">
-            <div>
-              <div className="text-2xl md:text-4xl font-extrabold text-primary-400">
-                24/7
-              </div>
-              <div className="mt-1 text-[10px] md:text-sm font-medium text-slate-500 uppercase tracking-wider">
-                AI Support
-              </div>
-            </div>
-            <div>
-              <div className="text-2xl md:text-4xl font-extrabold text-primary-400">
-                1M+
-              </div>
-              <div className="mt-1 text-[10px] md:text-sm font-medium text-slate-500 uppercase tracking-wider">
-                Patients Saved
-              </div>
-            </div>
-            <div>
-              <div className="text-2xl md:text-4xl font-extrabold text-primary-400">
-                5k+
-              </div>
-              <div className="mt-1 text-[10px] md:text-sm font-medium text-slate-500 uppercase tracking-wider">
-                Verified Doctors
-              </div>
-            </div>
-            <div>
-              <div className="text-2xl md:text-4xl font-extrabold text-primary-400">
-                99.9%
-              </div>
-              <div className="mt-1 text-[10px] md:text-sm font-medium text-slate-500 uppercase tracking-wider">
-                Reliability
-              </div>
-            </div>
+      <section className="py-20 bg-slate-50 border-y border-slate-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
+            {[
+              { label: "Active Patents", value: "250K+" },
+              { label: "Specialist Doctors", value: "5.4K" },
+              { label: "Partner Labs", value: "890" },
+              { label: "Reliability", value: "99.9%" },
+            ].map((stat) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-center"
+              >
+                <div className="text-4xl md:text-5xl font-black text-slate-900 mb-2 font-mono tracking-tighter">
+                  {stat.value}
+                </div>
+                <div className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 md:py-24 bg-slate-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="text-primary-400 font-semibold tracking-wide uppercase text-xs">
-              Core Ecosystem
-            </h2>
-            <p className="mt-1 text-2xl font-extrabold text-white sm:text-4xl">
-              Everything in one place.
+      <section id="features" className="py-24 lg:py-40 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col lg:flex-row items-end justify-between mb-20 gap-8">
+            <div className="max-w-xl text-center lg:text-left">
+              <h2 className="text-primary-600 font-black text-xs uppercase tracking-[0.3em] mb-4 flex items-center justify-center lg:justify-start gap-2">
+                <span className="w-8 h-px bg-primary-600/30" />
+                The Protocol
+              </h2>
+              <p className="text-4xl lg:text-6xl font-black text-slate-900 leading-tight tracking-tight">
+                Designed for the <br />
+                modern provider.
+              </p>
+            </div>
+            <p className="max-w-md text-slate-500 text-lg leading-relaxed text-center lg:text-left">
+              Our platform streamlines every clinical touchpoint, from
+              scheduling to pharmacy routing, using high-compliance AI.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {/* Feature 1 */}
-            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800 shadow-sm hover:shadow-xl transition-shadow duration-300 text-center md:text-left">
-              <div className="w-10 h-10 bg-primary-900/50 rounded-lg flex items-center justify-center mb-4 mx-auto md:mx-0">
-                <Stethoscope className="text-primary-400" size={20} />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">
-                Telemedicine
-              </h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Connect with verified doctors instantly. Book appointments with
-                real-time tracking.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800 shadow-sm hover:shadow-xl transition-shadow duration-300 text-center md:text-left">
-              <div className="w-10 h-10 bg-accent-900/50 rounded-lg flex items-center justify-center mb-4 mx-auto md:md:mx-0">
-                <Activity className="text-accent-400" size={20} />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">
-                Lab & Pharmacy
-              </h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Direct routing to partners. Book tests and get results on your
-                dashboard.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800 shadow-sm hover:shadow-xl transition-shadow duration-300 text-center md:text-left">
-              <div className="w-10 h-10 bg-red-900/30 rounded-lg flex items-center justify-center mb-4 mx-auto md:mx-0">
-                <HeartPulse className="text-red-400" size={20} />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">
-                Emergency SOS
-              </h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                One-tap trigger alerts nearby care and emergency contacts
-                immediately.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <Stethoscope className="text-primary-600" />,
+                title: "Unified Telehealth",
+                desc: "Secure, high-fidelity video consultations with integrated patient history and charting.",
+              },
+              {
+                icon: <ShieldCheck className="text-indigo-600" />,
+                title: "End-to-End Safety",
+                desc: "Bank-grade encryption for all medical records and pharmacy transmissions.",
+              },
+              {
+                icon: <HeartPulse className="text-rose-500" />,
+                title: "Smart Monitoring",
+                desc: "Real-time vitals tracking and AI-driven alerts for immediate intervention.",
+              },
+            ].map((feature, i) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                viewport={{ once: true }}
+                className="group p-8 rounded-[2rem] bg-slate-50 border border-slate-100 hover:bg-white hover:border-primary-100 hover:shadow-2xl transition-all duration-500"
+              >
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:bg-primary-50 transition-all duration-500">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-4">
+                  {feature.title}
+                </h3>
+                <p className="text-slate-500 leading-relaxed font-medium">
+                  {feature.desc}
+                </p>
+              </motion.div>
+            ))}
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-primary-900 py-12 md:py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl font-extrabold text-white sm:text-4xl mb-4">
-            Ready to start?
-          </h2>
-          {user ? (
-            <Link
-              to="/dashboard"
-              className="inline-flex items-center justify-center px-6 py-3 text-base font-bold text-primary-600 bg-white hover:bg-slate-50 rounded-full shadow-2xl transition-all hover:scale-105"
-            >
-              Back to Dashboard
-              <LayoutDashboard className="ml-2 h-4 w-4" />
-            </Link>
-          ) : (
-            <Link
-              to="/register"
-              className="inline-flex items-center justify-center px-6 py-3 text-base font-bold text-primary-600 bg-white hover:bg-slate-50 rounded-full shadow-2xl transition-all hover:scale-105"
-            >
-              Create Your Account
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          )}
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-950 border-t border-slate-800 pt-12 pb-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
-          <div className="flex justify-between items-center flex-col md:flex-row gap-4">
-            <div className="flex items-center gap-2">
+      <footer className="py-20 bg-slate-900">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-12">
+            <div className="flex items-center gap-4">
               <img
                 src={logoUrl}
-                alt="Curexal Logo"
-                className="h-6 w-6 rounded-md grayscale opacity-50"
+                className="h-10 w-10 rounded-xl contrast-125"
+                alt="Curexal"
               />
-              <span className="text-lg font-bold text-slate-600">Curexal</span>
+              <span className="text-2xl font-black text-white tracking-tighter">
+                CUREXAL
+              </span>
             </div>
-            <p className="text-slate-500 text-xs text-center">
-              &copy; {new Date().getFullYear()} Curexal. All rights reserved.
+
+            <div className="flex gap-8 text-slate-400 text-sm font-bold uppercase tracking-widest">
+              <a href="#" className="hover:text-primary-400 transition-colors">
+                Privacy
+              </a>
+              <a href="#" className="hover:text-primary-400 transition-colors">
+                Terms
+              </a>
+              <a href="#" className="hover:text-primary-400 transition-colors">
+                API
+              </a>
+            </div>
+
+            <p className="text-slate-500 text-xs font-bold">
+              &copy; {new Date().getFullYear()} CUREXAL LABS.
             </p>
           </div>
         </div>

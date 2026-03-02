@@ -63,7 +63,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
 
       <div className="flex-1 w-full overflow-y-auto pt-24 pb-12 flex flex-col items-center px-4">
@@ -75,20 +75,20 @@ const Register = () => {
             <img
               src={logoUrl}
               alt="Curexal Logo"
-              className="h-10 w-10 rounded-lg object-cover shadow-sm border border-slate-800"
+              className="h-10 w-10 rounded-lg object-cover shadow-sm border border-slate-100"
             />
-            <div className="mt-1 text-primary-400 font-bold text-lg tracking-wide">
+            <div className="mt-1 text-primary-600 font-bold text-lg tracking-wide">
               Curexal
             </div>
           </div>
-          <h2 className="text-center text-xl font-extrabold text-white">
+          <h2 className="text-center text-xl font-extrabold text-slate-900">
             Create an account
           </h2>
-          <p className="mt-1 text-center text-xs text-slate-500">
+          <p className="mt-1 text-center text-xs text-slate-400">
             Or{" "}
             <Link
               to="/login"
-              className="font-medium text-primary-400 hover:text-primary-300 transition-colors"
+              className="font-medium text-primary-600 hover:text-primary-500 transition-colors"
             >
               sign in to your account
             </Link>
@@ -96,7 +96,7 @@ const Register = () => {
         </div>
 
         <div className="mt-6 w-full max-w-md">
-          <div className="bg-slate-950 py-6 px-5 shadow-xl rounded-xl border border-slate-800">
+          <div className="bg-white py-6 px-5 shadow-xl rounded-xl border border-slate-100">
             <form className="space-y-4" onSubmit={handleSubmit}>
               {error && (
                 <div className="bg-red-900/30 border-l-2 border-red-500 p-3 rounded flex items-start">
@@ -128,7 +128,7 @@ const Register = () => {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-9 rounded-md border py-2 px-3 text-xs bg-slate-900 border-slate-700 text-slate-200 placeholder-slate-600 focus:ring-1 focus:ring-primary-500 focus:outline-none"
+                    className="w-full pl-9 rounded-md border py-2 px-3 text-xs bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-primary-500 focus:outline-none"
                     placeholder="John Doe"
                   />
                 </div>
@@ -150,7 +150,7 @@ const Register = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-9 rounded-md border py-2 px-3 text-xs bg-slate-900 border-slate-700 text-slate-200 placeholder-slate-600 focus:ring-1 focus:ring-primary-500 focus:outline-none"
+                    className="w-full pl-9 rounded-md border py-2 px-3 text-xs bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-primary-500 focus:outline-none"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -170,7 +170,7 @@ const Register = () => {
                     name="role"
                     value={role}
                     onChange={(e) => setRole(Number(e.target.value))}
-                    className="w-full pl-9 rounded-md border py-2 px-3 text-xs bg-slate-900 border-slate-700 text-slate-200 focus:ring-1 focus:ring-primary-500 focus:outline-none appearance-none cursor-pointer"
+                    className="w-full pl-9 rounded-md border py-2 px-3 text-xs bg-slate-50 border-slate-200 text-slate-800 focus:ring-1 focus:ring-primary-500 focus:outline-none appearance-none cursor-pointer"
                   >
                     <option value={2}>Patient</option>
                     <option value={3}>Doctor</option>
@@ -196,7 +196,7 @@ const Register = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-9 rounded-md border py-2 px-3 text-xs bg-slate-900 border-slate-700 text-slate-200 placeholder-slate-600 focus:ring-1 focus:ring-primary-500 focus:outline-none"
+                    className="w-full pl-9 rounded-md border py-2 px-3 text-xs bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-primary-500 focus:outline-none"
                     placeholder="••••••••"
                   />
                 </div>

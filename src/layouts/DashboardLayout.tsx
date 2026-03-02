@@ -8,12 +8,17 @@ import {
   User as UserIcon,
   Menu,
   X,
+  ChevronRight,
+  Bell,
+  Search,
 } from "lucide-react";
 import api from "../lib/api";
 import { AIChatWidget } from "../components/AIChatWidget";
 import logoUrl from "../assets/img/logo.jpg";
 import { NAVIGATION_CONFIG } from "../utils/navigationConfig";
 import { ROLE_REDIRECT } from "../utils/roleRedirect";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "../lib/utils";
 
 const DashboardLayout = () => {
   const { user, logout } = useAuthStore();
@@ -30,149 +35,218 @@ const DashboardLayout = () => {
     }
   };
 
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-surface dark:bg-slate-900">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-      </div>
-    );
-  }
-
-  // Base navigation styling class
-  const getNavClass = (isActive: boolean) =>
-    `flex items-center gap-2 px-2 py-1.5 rounded-md font-medium transition-colors ${
-      isActive
-        ? "text-primary-300 bg-primary-900/40"
-        : "text-slate-400 hover:bg-slate-800"
-    }`;
+  if (!user) return null;
 
   return (
-    <div className="flex h-screen bg-surface dark:bg-slate-900 border-border dark:border-slate-800 text-foreground dark:text-slate-200 transition-colors duration-300 overflow-hidden">
-      {/* Mobile Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm md:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
+    <div className="flex h-screen bg-[#f8fafc] overflow-hidden font-sans">
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed inset-0 z-60 bg-slate-900/40 backdrop-blur-sm lg:hidden"
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-background dark:bg-slate-950 border-r border-border dark:border-slate-800 flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
-          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={cn(
+          "fixed inset-y-0 left-0 z-70 w-72 m-4 rounded-3xl bg-slate-900 text-white shadow-2xl transition-transform duration-500 ease-[0.16, 1, 0.3, 1] lg:relative lg:translate-x-0 lg:m-6 lg:mr-0",
+          isMobileMenuOpen
+            ? "translate-x-0"
+            : "-translate-x-[120%] lg:translate-x-0",
+        )}
       >
-        <div className="h-16 flex items-center justify-between px-6 border-b border-border dark:border-slate-800">
-          <Link
-            to="/"
-            className="flex items-center text-primary-600 dark:text-primary-400 font-bold text-xl gap-3"
-          >
-            <img
-              src={logoUrl}
-              alt="Curexal Logo"
-              className="h-8 w-8 rounded-md object-cover"
-            />
-            Curexal
-          </Link>
-          <button
-            className="md:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          {/* Dashboard Home - applies to all roles */}
-          <NavLink
-            to={ROLE_REDIRECT[user.role] ?? "/dashboard"}
-            end
-            className={({ isActive }) => getNavClass(isActive)}
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <Home size={18} />
-            <span className="text-sm">Dashboard</span>
-          </NavLink>
-
-          {/* Dynamic Navigation Based on Role Config */}
-          {NAVIGATION_CONFIG[user.role]?.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) => getNavClass(isActive)}
+        <div className="h-full flex flex-col p-6">
+          <div className="flex items-center justify-between mb-10 px-2">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-white p-1.5 shadow-xl sm:rotate-3">
+                <img
+                  src={logoUrl}
+                  alt="Logo"
+                  className="h-full w-full object-cover rounded-lg"
+                />
+              </div>
+              <span className="text-xl font-black tracking-tighter">
+                CUREXAL
+              </span>
+            </Link>
+            <button
+              className="lg:hidden p-2 hover:bg-white/10 rounded-xl transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <span className="flex items-center gap-3 text-sm">
-                {item.icon}
-                {item.label}
-              </span>
-            </NavLink>
-          ))}
+              <X size={20} />
+            </button>
+          </div>
 
-          {/* User Settings - applies to all roles */}
-          <div className="pt-2 mt-2 border-t border-border dark:border-slate-800">
+          <nav className="flex-1 space-y-1.5 overflow-y-auto custom-scrollbar pr-2">
+            <NavLink
+              to={ROLE_REDIRECT[user.role] ?? "/dashboard"}
+              end
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group",
+                  isActive
+                    ? "bg-primary-600 text-white shadow-lg shadow-primary-600/30"
+                    : "text-slate-400 hover:text-white hover:bg-white/5",
+                )
+              }
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Home size={18} />
+              <span>Dashboard</span>
+              <ChevronRight
+                size={14}
+                className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
+              />
+            </NavLink>
+
+            <div className="py-4">
+              <span className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                Menu
+              </span>
+            </div>
+
+            {NAVIGATION_CONFIG[user.role]?.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group",
+                    isActive
+                      ? "bg-primary-600 text-white shadow-lg shadow-primary-600/30"
+                      : "text-slate-400 hover:text-white hover:bg-white/5",
+                  )
+                }
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </NavLink>
+            ))}
+
+            <div className="py-4 mt-4 border-t border-white/5">
+              <span className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                Account
+              </span>
+            </div>
+
             <NavLink
               to="/dashboard/profile"
-              className={({ isActive }) => getNavClass(isActive)}
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group",
+                  isActive
+                    ? "bg-primary-600 text-white shadow-lg shadow-primary-600/30"
+                    : "text-slate-400 hover:text-white hover:bg-white/5",
+                )
+              }
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <UserIcon size={18} /> <span className="text-sm">Profile</span>
+              <UserIcon size={18} />
+              <span>Profile</span>
             </NavLink>
+
             <NavLink
               to="/dashboard/settings"
-              className={({ isActive }) => getNavClass(isActive)}
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group",
+                  isActive
+                    ? "bg-primary-600 text-white shadow-lg shadow-primary-600/30"
+                    : "text-slate-400 hover:text-white hover:bg-white/5",
+                )
+              }
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <Settings size={18} /> <span className="text-sm">Settings</span>
+              <Settings size={18} />
+              <span>Settings</span>
             </NavLink>
-          </div>
-        </nav>
+          </nav>
 
-        <div className="p-3 border-t border-border dark:border-slate-800">
-          <div className="flex items-center gap-2 px-2 py-1 mb-2">
-            <div className="h-8 w-8 bg-accent-900/50 rounded-full flex justify-center items-center text-accent-400 font-bold text-xs">
-              {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+          <div className="mt-auto pt-6 border-t border-white/5">
+            <div className="flex items-center gap-3 px-4 mb-6">
+              <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center font-black text-primary-400">
+                {user.name?.charAt(0).toUpperCase()}
+              </div>
+              <div className="flex flex-col overflow-hidden">
+                <span className="text-sm font-bold truncate">{user.name}</span>
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                  {user.role_name}
+                </span>
+              </div>
             </div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-xs font-semibold truncate w-24 text-slate-200">
-                {user.name || "User"}
-              </span>
-            </div>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold text-rose-400 hover:bg-rose-500/10 transition-all active:scale-95"
+            >
+              <LogOut size={18} />
+              Sign Out
+            </button>
           </div>
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-3 py-1.5 border border-slate-700 shadow-sm text-xs font-medium rounded-md text-slate-300 bg-slate-800 hover:bg-slate-700 transition-colors"
-          >
-            <LogOut size={14} />
-            Sign Out
-          </button>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col overflow-hidden bg-surface dark:bg-slate-900 min-w-0">
-        <header className="bg-background dark:bg-slate-950 shadow-sm h-12 sm:h-16 flex items-center justify-between px-3 sm:px-8 border-b border-border dark:border-slate-800 shrink-0 transition-colors duration-300">
-          <div className="flex items-center gap-3">
+      <main className="flex-1 flex flex-col min-w-0 bg-[#f8fafc] relative">
+        <header className="h-20 lg:h-24 px-6 lg:px-10 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-4 lg:gap-8 flex-1">
             <button
-              className="md:hidden p-1.5 -ml-1 text-slate-400 hover:text-slate-200 rounded-md focus:outline-none"
+              className="lg:hidden p-2 text-slate-500 hover:bg-slate-200 rounded-xl transition-colors"
               onClick={() => setIsMobileMenuOpen(true)}
             >
-              <Menu size={20} />
+              <Menu size={24} />
             </button>
-            <h1 className="text-sm sm:text-xl font-semibold text-slate-200 capitalize truncate max-w-[150px] sm:max-w-none">
-              {location.pathname === "/dashboard"
-                ? `Hi, ${user.name?.split(" ")[0] || "User"}`
-                : location.pathname.split("/").pop()?.replace("-", " ")}
-            </h1>
+            <div className="hidden sm:flex items-center gap-3 px-4 py-2 bg-white border border-slate-200 rounded-2xl w-full max-w-sm shadow-sm">
+              <Search size={18} className="text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search..."
+                className="bg-transparent border-none text-sm focus:outline-none w-full font-medium"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 sm:gap-6">
+            <button className="relative p-2.5 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-primary-600 transition-all shadow-sm group">
+              <Bell size={20} />
+              <span className="absolute top-2.5 right-2.5 h-2 w-2 bg-rose-500 rounded-full border-2 border-white group-hover:scale-125 transition-transform" />
+            </button>
+            <div className="h-10 w-10 rounded-2xl bg-slate-900 flex items-center justify-center font-black text-white text-xs border-2 border-slate-200 shadow-xl lg:rotate-3 transition-transform hover:rotate-0 cursor-pointer">
+              {user.name?.charAt(0).toUpperCase()}
+            </div>
           </div>
         </header>
-        <div className="flex-1 overflow-auto p-2 sm:p-8 relative">
-          {/* Rendering Nested Routes */}
-          <Outlet />
+
+        <div className="flex-1 overflow-x-hidden overflow-y-auto custom-scrollbar px-6 lg:px-10 pb-10">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+              className="h-full"
+            >
+              <div className="mb-10">
+                <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-2 uppercase">
+                  {location.pathname === "/dashboard"
+                    ? "Overview"
+                    : location.pathname.split("/").pop()?.replace("-", " ")}
+                </h1>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                  <span className="w-8 h-px bg-slate-200" />
+                  Dashboard Control
+                </p>
+              </div>
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
 
-      {/* Floating AI Assistant Widget - Simplified for compactness */}
       <AIChatWidget />
     </div>
   );

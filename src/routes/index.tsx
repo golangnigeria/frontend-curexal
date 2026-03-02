@@ -5,6 +5,9 @@ import DashboardLayout from "../layouts/DashboardLayout";
 
 // Public Pages
 import Landing from "../pages/Landing";
+import Features from "../pages/Features";
+import Doctors from "../pages/Doctors";
+import About from "../pages/About";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
@@ -32,6 +35,9 @@ export const AppRoutes = () => {
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<Landing />} />
+      <Route path="/features" element={<Features />} />
+      <Route path="/doctors" element={<Doctors />} />
+      <Route path="/about" element={<About />} />
 
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<Login />} />

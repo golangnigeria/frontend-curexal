@@ -1,102 +1,172 @@
 import { useEffect, useState } from "react";
-import { NavLink, Link, useLocation } from "react-router-dom";
-import { ArrowRight, LayoutDashboard } from "lucide-react";
+import { NavLink, Link } from "react-router-dom";
+import { ArrowRight, LayoutDashboard, Menu as MenuIcon, X } from "lucide-react";
 import logoUrl from "../../assets/img/logo.jpg";
 import { useAuthStore } from "../../store/useAuthStore";
+import { cn } from "../../lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user } = useAuthStore();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      setIsScrolled(window.scrollY > 20);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
-    `text-sm font-medium transition-colors ${
-      isActive ? "text-primary-400" : "text-slate-300 hover:text-primary-400"
-    }`;
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Features", path: "/features" },
+    { name: "Doctors", path: "/doctors" },
+    { name: "About", path: "/about" },
+  ];
 
   return (
-    <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-slate-950/90 backdrop-blur-md shadow-md border-b border-slate-800"
-          : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 sm:h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 sm:gap-3">
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4">
+      <motion.nav
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{
+          duration: 0.8,
+        }}
+        className={cn(
+          "w-full max-w-7xl h-14 sm:h-16 px-4 sm:px-6 rounded-2xl flex items-center justify-between transition-all duration-300",
+          isScrolled
+            ? "bg-white/80 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)]"
+            : "bg-transparent",
+        )}
+      >
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="relative h-8 w-8 sm:h-10 sm:w-10 overflow-hidden rounded-xl border border-slate-100 shadow-sm transition-all group-hover:scale-110">
             <img
               src={logoUrl}
-              alt="Curexal Logo"
-              className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg object-cover shadow-sm border border-slate-800"
+              alt="Logo"
+              className="h-full w-full object-cover"
             />
-            <span className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary-400 to-primary-300 tracking-tight">
-              Curexal
-            </span>
-          </Link>
-
-          {/* Desktop Nav Links */}
-          <div className="hidden md:flex space-x-6 lg:space-x-8">
-            <NavLink to="/" className={navLinkClasses}>
-              Home
-            </NavLink>
-            <NavLink to="/features" className={navLinkClasses}>
-              Features
-            </NavLink>
-            <NavLink to="/about" className={navLinkClasses}>
-              About Us
-            </NavLink>
-            <NavLink to="/contact" className={navLinkClasses}>
-              Contact
-            </NavLink>
           </div>
+          <span className="text-xl font-bold tracking-tighter text-slate-900">
+            CURE<span className="text-primary-600 font-black">XAL</span>
+          </span>
+        </Link>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            {user ? (
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-1 p-1 bg-slate-100/50 rounded-xl border border-slate-200/50">
+          {navLinks.map((link) => (
+            <NavLink
+              key={link.name}
+              to={link.path}
+              className={({ isActive }) =>
+                cn(
+                  "px-4 py-1.5 text-xs font-semibold rounded-lg transition-all",
+                  isActive
+                    ? "bg-white text-primary-600 shadow-sm"
+                    : "text-slate-500 hover:text-slate-900 hover:bg-white/50",
+                )
+              }
+            >
+              {link.name}
+            </NavLink>
+          ))}
+        </div>
+
+        {/* Desktop Actions */}
+        <div className="hidden md:flex items-center gap-3">
+          {user ? (
+            <Link
+              to="/dashboard"
+              className="h-10 px-5 bg-slate-900 text-white text-xs font-bold rounded-xl flex items-center gap-2 hover:bg-slate-800 transition-all shadow-lg active:scale-95"
+            >
+              <LayoutDashboard size={14} />
+              Dashboard
+            </Link>
+          ) : (
+            <>
               <Link
-                to="/dashboard"
-                className="inline-flex items-center justify-center px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-primary-600 hover:bg-primary-500 rounded-full shadow-lg shadow-primary-500/30 transition-all hover:-translate-y-0.5"
+                to="/login"
+                className="text-xs font-bold text-slate-600 hover:text-slate-900 px-4"
               >
-                <LayoutDashboard className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                Dashboard
+                Sign In
               </Link>
-            ) : (
-              <>
-                {location.pathname !== "/login" && (
+              <Link
+                to="/register"
+                className="h-10 px-5 bg-primary-600 text-white text-xs font-bold rounded-xl flex items-center gap-2 hover:bg-primary-500 transition-all shadow-lg shadow-primary-600/20 active:scale-95"
+              >
+                Get Started
+                <ArrowRight size={14} />
+              </Link>
+            </>
+          )}
+        </div>
+
+        {/* Mobile Toggle */}
+        <button
+          className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <X size={20} /> : <MenuIcon size={20} />}
+        </button>
+      </motion.nav>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            className="fixed top-20 left-4 right-4 z-40 p-4 bg-white/95 backdrop-blur-xl border border-slate-100 rounded-2xl shadow-2xl md:hidden"
+          >
+            <div className="grid gap-2 mb-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl"
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+            <div className="grid gap-2 border-t border-slate-100 pt-4">
+              {user ? (
+                <Link
+                  to="/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="h-12 flex items-center justify-center gap-2 bg-slate-900 text-white font-bold rounded-xl"
+                >
+                  <LayoutDashboard size={16} />
+                  Go to Dashboard
+                </Link>
+              ) : (
+                <>
                   <Link
                     to="/login"
-                    className="hidden xs:inline-flex items-center justify-center px-4 py-2 text-xs sm:text-sm font-semibold text-primary-300 bg-primary-900/40 hover:bg-primary-900/60 rounded-full transition-all"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="h-12 flex items-center justify-center text-slate-600 font-bold"
                   >
                     Sign In
                   </Link>
-                )}
-
-                {location.pathname !== "/register" && (
                   <Link
                     to="/register"
-                    className="inline-flex items-center justify-center px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-primary-600 hover:bg-primary-500 rounded-full shadow-lg shadow-primary-500/30 transition-all hover:-translate-y-0.5"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="h-12 flex items-center justify-center gap-2 bg-primary-600 text-white font-bold rounded-xl"
                   >
-                    Get Started
-                    <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    Create Account
+                    <ArrowRight size={16} />
                   </Link>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </nav>
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
   );
 };
 
