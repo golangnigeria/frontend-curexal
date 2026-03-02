@@ -11,8 +11,10 @@ import {
 } from "lucide-react";
 import Navbar from "../components/ui/Navbar";
 import { Link } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore";
 
 const Features = () => {
+  const { user } = useAuthStore();
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -162,18 +164,30 @@ const Features = () => {
             <span className="text-primary-400">new standard</span> in care?
           </h2>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link
-              to="/register"
-              className="h-14 px-10 bg-white text-slate-900 font-bold rounded-2xl flex items-center justify-center hover:bg-slate-50 transition-all active:scale-95 shadow-xl"
-            >
-              Get Started Now
-            </Link>
-            <Link
-              to="/login"
-              className="h-14 px-10 bg-slate-800 text-white font-bold rounded-2xl flex items-center justify-center border border-white/10 hover:bg-slate-700 transition-all active:scale-95"
-            >
-              Sign In
-            </Link>
+            {user ? (
+              <Link
+                to="/dashboard"
+                className="h-14 px-10 bg-white text-slate-900 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-slate-50 transition-all active:scale-95 shadow-xl"
+              >
+                Go to Dashboard
+                <ArrowRight size={18} />
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/register"
+                  className="h-14 px-10 bg-white text-slate-900 font-bold rounded-2xl flex items-center justify-center hover:bg-slate-50 transition-all active:scale-95 shadow-xl"
+                >
+                  Get Started Now
+                </Link>
+                <Link
+                  to="/login"
+                  className="h-14 px-10 bg-slate-800 text-white font-bold rounded-2xl flex items-center justify-center border border-white/10 hover:bg-slate-700 transition-all active:scale-95"
+                >
+                  Sign In
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>

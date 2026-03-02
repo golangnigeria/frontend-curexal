@@ -11,9 +11,11 @@ import {
 } from "lucide-react";
 import Navbar from "../components/ui/Navbar";
 import { Link } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore";
 import { useState } from "react";
 
 const Doctors = () => {
+  const { user } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState("");
 
   const containerVariants = {
@@ -221,11 +223,11 @@ const Doctors = () => {
                     </div>
                   </div>
                   <Link
-                    to="/login"
+                    to={user ? "/dashboard" : "/login"}
                     className="h-10 px-4 bg-slate-900 text-white text-[10px] font-bold rounded-xl flex items-center gap-2 hover:bg-primary-600 transition-all active:scale-95"
                   >
                     <Calendar size={14} />
-                    Book
+                    {user ? "Book Consultation" : "Book"}
                   </Link>
                 </div>
               </motion.div>

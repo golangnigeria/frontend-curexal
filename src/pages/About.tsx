@@ -2,8 +2,10 @@ import { motion } from "framer-motion";
 import { Heart, Target, ShieldCheck, Cpu, ArrowRight } from "lucide-react";
 import Navbar from "../components/ui/Navbar";
 import { Link } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore";
 
 const About = () => {
+  const { user } = useAuthStore();
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -223,10 +225,11 @@ const About = () => {
 
       <div className="max-w-7xl mx-auto px-6 pt-32 text-center">
         <Link
-          to="/register"
+          to={user ? "/dashboard" : "/register"}
           className="inline-flex items-center gap-3 text-primary-600 text-sm font-black uppercase tracking-[0.3em] hover:gap-6 transition-all"
         >
-          Join our mission <ArrowRight size={20} />
+          {user ? "Back to Dashboard" : "Join our mission"}{" "}
+          <ArrowRight size={20} />
         </Link>
       </div>
     </div>
