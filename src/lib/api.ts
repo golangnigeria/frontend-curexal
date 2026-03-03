@@ -35,6 +35,11 @@ api.interceptors.response.use(
     
     // If error is 401 Unauthorized and we haven't already retried
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Don't attempt refresh or redirect if we're already trying to login
+      if (originalRequest.url?.includes('/auth/login')) {
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
       
       try {
@@ -55,7 +60,11 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // If refresh fails, log the user out
         useAuthStore.getState().logout();
-        window.location.href = `${BASE_URL}/login`;
+        
+        // Only redirect if we're not already on the login page or trying to login
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
         return Promise.reject(refreshError);
       }
     }
