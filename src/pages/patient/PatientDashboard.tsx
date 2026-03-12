@@ -8,7 +8,6 @@ import {
   Bell,
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
-import { useChatStore } from "../../store/useChatStore";
 import api from "../../lib/api";
 import { toast } from "react-toastify";
 import SpecialtySelectorModal from "../../components/chat/SpecialtySelectorModal";
@@ -20,8 +19,7 @@ interface DashboardRecord {
 }
 
 const PatientDashboard = () => {
-  const { user, token } = useAuthStore();
-  const { connectNotifySocket, disconnectNotifySocket } = useChatStore();
+  const { user } = useAuthStore();
 
   const [counts, setCounts] = useState({
     appointments: 0,
@@ -72,11 +70,6 @@ const PatientDashboard = () => {
   };
 
   useEffect(() => {
-    // Connect to the global notification socket when the dashboard loads
-    if (token) {
-      connectNotifySocket(token);
-    }
-
     const handleRejection = () => {
       toast.error(
         "The doctor is currently unavailable. Please try another specialty or schedule an appointment.",
@@ -87,11 +80,9 @@ const PatientDashboard = () => {
     window.addEventListener("consultation_rejected", handleRejection);
 
     return () => {
-      // Disconnect when leaving the dashboard (optional, or keep it global in App.tsx)
-      disconnectNotifySocket();
       window.removeEventListener("consultation_rejected", handleRejection);
     };
-  }, [token, connectNotifySocket, disconnectNotifySocket]);
+  }, []);
 
   useEffect(() => {
     const fetchDashboardData = async () => {

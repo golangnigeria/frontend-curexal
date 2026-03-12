@@ -47,7 +47,19 @@ interface ChatState {
   removeIncomingRequest: (patientId: string) => void;
 }
 
-const WS_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace("http", "ws") || "ws://localhost:8081/api";
+const getWsBaseUrl = () => {
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
+    // Clean up trailing slashes
+    const baseUrl = apiBaseUrl.replace(/\/+$/, "");
+    
+    // Ensure it starts with ws or wss
+    const wsUrl = baseUrl.replace(/^http/, "ws");
+    
+    // If it doesn't already contain /api, add it
+    return wsUrl.includes("/api") ? wsUrl : `${wsUrl}/api`;
+};
+
+const WS_BASE_URL = getWsBaseUrl();
 
 export const useChatStore = create<ChatState>((set, get) => ({
   notifySocket: null,
@@ -59,56 +71,70 @@ export const useChatStore = create<ChatState>((set, get) => ({
   incomingRequests: [],
 
   connectNotifySocket: (token: string) => {
-    if (get().notifySocket) return; // already connected
+    if (get().notifySocket) return;
 
-    // We pass the token in the URL or rely on cookies.
-    // The backend `auth.Auth` accepts the `access_token` cookie.
-    // But since WebSockets might not send cross-origin cookies easily in dev,
-    // we can append it as a query param if the backend supports it.
-    // However, our auth_handler fallback checks the cookie or Authorization header.
-    // Since browser WS API doesn't allow custom headers, we'll try standard WS 
-    // and rely on the frontend sending the cookie automatically if withCredentials is setup 
-    // on the domain, or we pass it in the URL if the backend is modified.
-    // Let's assume cookies work for now as the backend uses `ctx.GetCookie("access_token")`.
-    
-    const ws = new WebSocket(`${WS_BASE_URL}/chat/notify?token=${token}`);
+    let reconnectTimeout: NodeJS.Timeout;
+    let retryCount = 0;
+    const maxRetries = 10;
 
-    ws.onopen = () => console.log("Notify WS Connected");
-    
-    ws.onmessage = (event) => {
-      try {
-        const data: RoomNotification = JSON.parse(event.data);
-        if (data.type === "incoming_request") {
-          console.log("Incoming consultation request!", data);
-          set((state) => ({ incomingRequests: [...state.incomingRequests, data] }));
-        } else if (data.type === "request_accepted") {
+    const connect = () => {
+      console.log(`Attempting to connect Notify WS (Attempt ${retryCount + 1}) to ${WS_BASE_URL}/chat/notify...`);
+      const ws = new WebSocket(`${WS_BASE_URL}/chat/notify?token=${token}`);
+
+      ws.onopen = () => {
+        console.log("Notify WS Connected");
+        retryCount = 0;
+        set({ notifySocket: ws });
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data: RoomNotification = JSON.parse(event.data);
+          if (data.type === "incoming_request") {
+            console.log("Incoming consultation request!", data);
+            set((state) => ({ 
+              incomingRequests: [...state.incomingRequests.filter(r => r.patientId !== data.patientId), data] 
+            }));
+            // Dispatch custom event for visual feedback in components that don't use the store directly
+            window.dispatchEvent(new CustomEvent('new_notification', { detail: data }));
+          } else if (data.type === "request_accepted") {
             console.log("Request accepted!", data);
             get().handleMatchFound(data.doctorId, data.patientId, token);
-        } else if (data.type === "request_rejected") {
+          } else if (data.type === "request_rejected") {
             console.log("Request rejected", data);
-            // Rejection toast or state here -- handled by component effect listening to changes if needed.
-            // But we can also dispatch a custom event on window
             window.dispatchEvent(new CustomEvent('consultation_rejected'));
-        } else if (data.type === "new_message") {
-          // If chat isn't open with this person, we might want to show a toast
-          if (!get().isChatOpen) {
-            // Toast would ideally go here, but Zustand shouldn't house UI toasts directly.
-            // A component listening to this state will handle it.
-            console.log("New message from", data.fromName);
           }
+        } catch (err) {
+          console.error("Failed to parse notify message", err);
         }
-      } catch (err) {
-        console.error("Failed to parse notify message", err);
-      }
+      };
+
+      ws.onclose = (event) => {
+        console.log("Notify WS Disconnected", event.reason);
+        set({ notifySocket: null });
+
+        // Don't reconnect if it was a normal closure (e.g. logout)
+        if (event.code !== 1000 && retryCount < maxRetries) {
+          const delay = Math.min(1000 * Math.pow(2, retryCount), 30000);
+          console.log(`Reconnecting Notify WS in ${delay}ms...`);
+          
+          if (reconnectTimeout) clearTimeout(reconnectTimeout);
+          reconnectTimeout = setTimeout(() => {
+            retryCount++;
+            connect();
+          }, delay);
+        }
+      };
+
+      ws.onerror = (err) => {
+        console.error("Notify WS Error", err);
+        ws.close();
+      };
     };
 
-    ws.onclose = () => {
-      console.log("Notify WS Disconnected");
-      set({ notifySocket: null });
-      // Optional: implement reconnection logic here
-    };
+    connect();
 
-    set({ notifySocket: ws });
+    // Store cleanup logic in the state if needed, but for now we rely on explicit disconnect
   },
 
   disconnectNotifySocket: () => {

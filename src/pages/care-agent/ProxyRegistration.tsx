@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { 
   User, 
@@ -50,8 +51,12 @@ const ProxyRegistration = () => {
       toast.success('Patient registered successfully!');
       setIsSuccess(true);
       setLoading(false);
-    } catch (err: any) {
-      toast.error(err.response?.data?.detail || 'Failed to register patient');
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        toast.error(err.response?.data?.detail || 'Failed to register patient');
+      } else {
+        toast.error('An unexpected error occurred');
+      }
       setLoading(false);
     }
   };

@@ -1,14 +1,12 @@
 import { Users, Calendar, Activity, CheckCircle, Video } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
-import { useChatStore } from "../../store/useChatStore";
 import { useState, useEffect } from "react";
 import api from "../../lib/api";
 import { toast } from "react-toastify";
 import ChatBox from "../../components/chat/ChatBox";
 
 const DoctorDashboard = () => {
-  const { user, token } = useAuthStore();
-  const { connectNotifySocket, disconnectNotifySocket } = useChatStore();
+  const { user } = useAuthStore();
   const [isOnline, setIsOnline] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -26,14 +24,6 @@ const DoctorDashboard = () => {
     fetchProfile();
   }, []);
 
-  useEffect(() => {
-    if (token) {
-      connectNotifySocket(token);
-    }
-    return () => {
-      disconnectNotifySocket();
-    };
-  }, [token, connectNotifySocket, disconnectNotifySocket]);
 
   const toggleOnlineStatus = async () => {
     setIsUpdating(true);

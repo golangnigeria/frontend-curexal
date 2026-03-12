@@ -19,11 +19,23 @@ import { NAVIGATION_CONFIG } from "../utils/navigationConfig";
 import { ROLE_REDIRECT } from "../utils/roleRedirect";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../lib/utils";
+import { useEffect } from "react";
+import { useChatStore } from "../store/useChatStore";
 
 const DashboardLayout = () => {
-  const { user, logout } = useAuthStore();
+  const { user, logout, token } = useAuthStore();
+  const { connectNotifySocket, disconnectNotifySocket } = useChatStore();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (token) {
+      connectNotifySocket(token);
+    }
+    return () => {
+      disconnectNotifySocket();
+    };
+  }, [token, connectNotifySocket, disconnectNotifySocket]);
 
   const handleLogout = async () => {
     try {
