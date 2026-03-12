@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import {
   Mail,
   Lock,
@@ -34,7 +34,11 @@ interface LoginResponse {
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setAuth } = useAuthStore();
+
+  const queryParams = new URLSearchParams(location.search);
+  const intent = queryParams.get("intent");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -62,7 +66,15 @@ const Login = () => {
 
       setAuth(loggedInUser, access_token, requires_onboarding);
       toast.success("Login successful 🎉");
-      navigate(ROLE_REDIRECT[loggedInUser.role] ?? "/dashboard");
+
+      // If intent is consult and user is a patient, redirect straight to dashboard
+      // (The dashboard could potentially listen for this intent via state or localstorage,
+      // but simpler is just sending them to dashboard where the button is obvious,
+      // or we can pass the query param to the dashboard)
+      const targetPath = ROLE_REDIRECT[loggedInUser.role] ?? "/dashboard";
+      navigate(
+        intent === "consult" ? `${targetPath}?action=consult` : targetPath,
+      );
     } catch (err) {
       const error = err as AxiosError<{
         title?: string;

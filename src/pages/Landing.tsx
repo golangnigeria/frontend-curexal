@@ -95,17 +95,18 @@ const Landing = () => {
             ) : (
               <>
                 <Link
-                  to="/register"
+                  to="/login?intent=consult"
                   className="h-14 px-10 bg-primary-600 text-white font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-primary-500 transition-all shadow-xl shadow-primary-600/20 active:scale-95"
+                >
+                  <Stethoscope size={20} />
+                  Speak to a Doctor
+                </Link>
+                <Link
+                  to="/register"
+                  className="h-14 px-10 bg-white border border-slate-200 text-slate-600 font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-slate-50 transition-all active:scale-95"
                 >
                   Start Your Journey
                   <ArrowRight size={20} />
-                </Link>
-                <Link
-                  to="/about"
-                  className="h-14 px-10 bg-white border border-slate-200 text-slate-600 font-bold rounded-2xl flex items-center justify-center hover:bg-slate-50 transition-all active:scale-95"
-                >
-                  Learn More
                 </Link>
               </>
             )}

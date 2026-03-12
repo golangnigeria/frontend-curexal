@@ -26,6 +26,10 @@ import DoctorDashboard from "../pages/doctor/DoctorDashboard";
 import DoctorAppointments from "../pages/doctor/DoctorAppointments";
 import DoctorPrescriptions from "../pages/doctor/DoctorPrescriptions";
 
+// Care Agent Pages
+import CareAgentDashboard from "../pages/care-agent/CareAgentDashboard";
+import ProxyRegistration from "../pages/care-agent/ProxyRegistration";
+import PaymentCoordination from "../pages/care-agent/PaymentCoordination";
 import { useAuthStore } from "../store/useAuthStore";
 
 export const AppRoutes = () => {
@@ -59,7 +63,13 @@ export const AppRoutes = () => {
         <Route
           index
           element={
-            user?.role === 3 ? <DoctorDashboard /> : <PatientDashboard />
+            user?.role === 3 ? (
+              <DoctorDashboard />
+            ) : user?.role === 7 ? (
+              <CareAgentDashboard />
+            ) : user?.role === 2 ? (
+              <PatientDashboard />
+            ) : null
           }
         />
 
@@ -105,9 +115,21 @@ export const AppRoutes = () => {
           element={<div className="p-8">Logistics Dashboard - Coming Soon</div>}
         />
         <Route
+          path="field-users"
+          element={<ProxyRegistration />}
+        />
+        <Route
+          path="field-users/new"
+          element={<ProxyRegistration />}
+        />
+        <Route
+          path="payments"
+          element={<PaymentCoordination />}
+        />
+        <Route
           path="care-agent/dashboard"
           element={
-            <div className="p-8">Care Agent Dashboard - Coming Soon</div>
+            <CareAgentDashboard />
           }
         />
       </Route>

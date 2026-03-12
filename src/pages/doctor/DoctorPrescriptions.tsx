@@ -31,7 +31,7 @@ export const DoctorPrescriptions = () => {
 
     setIsSubmitting(true);
     try {
-      await api.post("/doctors/prescriptions/issue", {
+      await api.post("/api/doctors/prescriptions/issue", {
         patient_id: patientId,
         medication_name: medication,
         dosage: dosage,

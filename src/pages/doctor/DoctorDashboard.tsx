@@ -1,8 +1,59 @@
-import { Users, Calendar, Activity, CheckCircle } from "lucide-react";
+import { Users, Calendar, Activity, CheckCircle, Video } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useChatStore } from "../../store/useChatStore";
+import { useState, useEffect } from "react";
+import api from "../../lib/api";
+import { toast } from "react-toastify";
+import ChatBox from "../../components/chat/ChatBox";
 
 const DoctorDashboard = () => {
-  const user = useAuthStore((state) => state.user);
+  const { user, token } = useAuthStore();
+  const { connectNotifySocket, disconnectNotifySocket } = useChatStore();
+  const [isOnline, setIsOnline] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get("/api/doctors/profile");
+        if (response.data && typeof response.data.is_online !== "undefined") {
+          setIsOnline(response.data.is_online);
+        }
+      } catch (error) {
+        console.error("Failed to fetch doctor profile:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      connectNotifySocket(token);
+    }
+    return () => {
+      disconnectNotifySocket();
+    };
+  }, [token, connectNotifySocket, disconnectNotifySocket]);
+
+  const toggleOnlineStatus = async () => {
+    setIsUpdating(true);
+    const newStatus = !isOnline;
+
+    try {
+      await api.put("/api/doctors/online_status", { is_online: newStatus });
+      setIsOnline(newStatus);
+      toast.success(
+        newStatus
+          ? "You are now accepting consultations"
+          : "You are no longer accepting consultations",
+      );
+    } catch (error) {
+      console.error("Failed to update status", error);
+      toast.error("Failed to update online status. Please try again.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -17,13 +68,49 @@ const DoctorDashboard = () => {
             Here's your schedule and patient overview for today.
           </p>
         </div>
-        <div className="flex gap-3 text-sm">
-          <div className="bg-green-50 text-green-700 border border-green-200 px-4 py-2 rounded-lg font-medium flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+        <div className="flex gap-3 text-sm items-center">
+          <div className="flex items-center gap-3">
+            <span
+              className={`text-sm font-medium transition-colors ${isOnline ? "text-slate-500" : "text-slate-800"}`}
+            >
+              Offline
             </span>
-            Available for Telemedicine
+
+            <button
+              onClick={toggleOnlineStatus}
+              disabled={isUpdating}
+              className={`
+                relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full border-2 border-transparent 
+                transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  
+                focus-visible:ring-white focus-visible:ring-opacity-75
+                ${isOnline ? "bg-green-500" : "bg-slate-300"}
+                ${isUpdating ? "opacity-70 cursor-wait" : ""}
+              `}
+              role="switch"
+              aria-checked={isOnline}
+            >
+              <span className="sr-only">Accepting Consultations</span>
+              <span
+                aria-hidden="true"
+                className={`
+                  pointer-events-none h-7 w-7 transform rounded-full bg-white shadow-lg ring-0 
+                  transition duration-200 ease-in-out flex items-center justify-center
+                  ${isOnline ? "translate-x-6" : "translate-x-0"}
+                `}
+              >
+                {isUpdating ? (
+                  <div className="h-4 w-4 border-2 border-slate-200 border-t-slate-500 rounded-full animate-spin"></div>
+                ) : isOnline ? (
+                  <Video size={14} className="text-green-500" />
+                ) : null}
+              </span>
+            </button>
+
+            <span
+              className={`text-sm font-bold transition-colors ${isOnline ? "text-green-600" : "text-slate-500"}`}
+            >
+              Accepting Consultations
+            </span>
           </div>
         </div>
       </div>
@@ -181,6 +268,8 @@ const DoctorDashboard = () => {
           </div>
         </div>
       </div>
+
+      <ChatBox />
     </div>
   );
 };

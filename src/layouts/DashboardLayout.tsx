@@ -9,11 +9,11 @@ import {
   Menu,
   X,
   ChevronRight,
-  Bell,
   Search,
 } from "lucide-react";
 import api from "../lib/api";
 import { AIChatWidget } from "../components/AIChatWidget";
+import NotificationDropdown from "../components/layout/NotificationDropdown";
 import logoUrl from "../assets/img/logo.jpg";
 import { NAVIGATION_CONFIG } from "../utils/navigationConfig";
 import { ROLE_REDIRECT } from "../utils/roleRedirect";
@@ -27,7 +27,7 @@ const DashboardLayout = () => {
 
   const handleLogout = async () => {
     try {
-      await api.post("/logout");
+      await api.post("/api/logout");
     } catch (err) {
       console.error("Logout failed on the backend:", err);
     } finally {
@@ -210,10 +210,7 @@ const DashboardLayout = () => {
           </div>
 
           <div className="flex items-center gap-3 sm:gap-6">
-            <button className="relative p-2.5 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-primary-600 transition-all shadow-sm group">
-              <Bell size={20} />
-              <span className="absolute top-2.5 right-2.5 h-2 w-2 bg-rose-500 rounded-full border-2 border-white group-hover:scale-125 transition-transform" />
-            </button>
+            <NotificationDropdown />
             <div className="h-10 w-10 rounded-2xl bg-slate-900 flex items-center justify-center font-black text-white text-xs border-2 border-slate-200 shadow-xl lg:rotate-3 transition-transform hover:rotate-0 cursor-pointer">
               {user.name?.charAt(0).toUpperCase()}
             </div>

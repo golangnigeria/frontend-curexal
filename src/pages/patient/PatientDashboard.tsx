@@ -8,8 +8,11 @@ import {
   Bell,
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useChatStore } from "../../store/useChatStore";
 import api from "../../lib/api";
 import { toast } from "react-toastify";
+import SpecialtySelectorModal from "../../components/chat/SpecialtySelectorModal";
+import ChatBox from "../../components/chat/ChatBox";
 
 interface DashboardRecord {
   status?: string;
@@ -17,14 +20,18 @@ interface DashboardRecord {
 }
 
 const PatientDashboard = () => {
-  const user = useAuthStore((state) => state.user);
+  const { user, token } = useAuthStore();
+  const { connectNotifySocket, disconnectNotifySocket } = useChatStore();
 
   const [counts, setCounts] = useState({
     appointments: 0,
     tests: 0,
     prescriptions: 0,
-    reminders: 0, // Using reminders instead of vitals for the 4th card based on the mockup label
+    reminders: 0, 
   });
+
+  const [isSpecialtyModalOpen, setIsSpecialtyModalOpen] = useState(false);
+  const [isMatchmaking, setIsMatchmaking] = useState(false);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -34,12 +41,57 @@ const PatientDashboard = () => {
   };
 
   const handleSpeakToDoctor = () => {
-    toast.info("Connecting to an available doctor... Please wait.", {
-      icon: <Stethoscope className="text-primary-500" />,
-    });
-    // Telehealth integration would go here
-    console.log("Speak to Doctor action triggered");
+    setIsSpecialtyModalOpen(true);
   };
+
+  const handleSpecialtySelect = async (specialtyId: string) => {
+    setIsMatchmaking(true);
+    try {
+      // Create request payload. (The backend may or may not use the specialty ID yet,
+      // but we send it for future-proofing or if the backend processes it).
+      const payload = { specialty: specialtyId };
+
+      const response = await api.post("/api/chat/request", payload);
+
+      if (response.data?.doctor_id) {
+        toast.info("Match found! Waiting for the doctor to accept...");
+        setIsSpecialtyModalOpen(false);
+        // The background Notify WebSocket will receive the "request_accepted" event automatically
+      }
+    } catch (err: any) {
+      console.error("Matchmaking error", err);
+      // Give the patient a nice response if no doctors are online/available
+      toast.error(
+        err.response?.data?.detail ||
+          "No doctors are currently available for this specialty. Please try again later or schedule an appointment.",
+        { autoClose: 6000 },
+      );
+    } finally {
+      setIsMatchmaking(false);
+    }
+  };
+
+  useEffect(() => {
+    // Connect to the global notification socket when the dashboard loads
+    if (token) {
+      connectNotifySocket(token);
+    }
+
+    const handleRejection = () => {
+      toast.error(
+        "The doctor is currently unavailable. Please try another specialty or schedule an appointment.",
+        { autoClose: 6000 },
+      );
+    };
+
+    window.addEventListener("consultation_rejected", handleRejection);
+
+    return () => {
+      // Disconnect when leaving the dashboard (optional, or keep it global in App.tsx)
+      disconnectNotifySocket();
+      window.removeEventListener("consultation_rejected", handleRejection);
+    };
+  }, [token, connectNotifySocket, disconnectNotifySocket]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -47,10 +99,10 @@ const PatientDashboard = () => {
         // Fetch all data in parallel efficiently
         const [apptsRes, testsRes, rxRes, remindersRes] =
           await Promise.allSettled([
-            api.get("/patients/appointments"),
-            api.get("/patients/tests"),
-            api.get("/patients/prescriptions"),
-            api.get("/patients/reminders"),
+            api.get("/api/patients/appointments"),
+            api.get("/api/patients/tests"),
+            api.get("/api/patients/prescriptions"),
+            api.get("/api/patients/reminders"),
           ]);
 
         setCounts({
@@ -73,7 +125,7 @@ const PatientDashboard = () => {
           prescriptions:
             rxRes.status === "fulfilled" && Array.isArray(rxRes.value.data)
               ? rxRes.value.data.length
-              : 0, // Assuming all returned are active or filter if needed
+              : 0,
 
           reminders:
             remindersRes.status === "fulfilled" &&
@@ -251,6 +303,14 @@ const PatientDashboard = () => {
           </div>
         </div>
       </div>
+
+      <SpecialtySelectorModal
+        isOpen={isSpecialtyModalOpen}
+        onClose={() => setIsSpecialtyModalOpen(false)}
+        onSelect={handleSpecialtySelect}
+        isLoading={isMatchmaking}
+      />
+      <ChatBox />
     </div>
   );
 };

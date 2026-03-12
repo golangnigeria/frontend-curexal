@@ -14,7 +14,7 @@ export const PatientVitals = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await api.post("/patients/vitals", {
+      await api.post("/api/patients/vitals", {
         blood_pressure: `${systolic}/${diastolic}`,
         heart_rate: parseInt(heartRate),
         temperature: parseFloat(temperature),
