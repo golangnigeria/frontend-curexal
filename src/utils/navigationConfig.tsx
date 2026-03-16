@@ -8,6 +8,7 @@ import {
   FileText,
   LayoutDashboard,
   Truck,
+  MessageSquare,
 } from "lucide-react";
 
 // Define a type for nav items
@@ -32,6 +33,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       path: "/dashboard/reports",
       icon: <FileText size={20} />,
     },
+    {
+      label: "Messages",
+      path: "/dashboard/messenger",
+      icon: <MessageSquare size={20} />,
+    },
   ],
   2: [
     // Patient
@@ -55,6 +61,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       path: "/dashboard/reminders",
       icon: <Bell size={20} />,
     },
+    {
+      label: "Messages",
+      path: "/dashboard/messenger",
+      icon: <MessageSquare size={20} />,
+    },
   ],
   3: [
     // Doctor
@@ -73,6 +84,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       path: "/dashboard/patient-records",
       icon: <FileText size={20} />,
     },
+    {
+      label: "Messages",
+      path: "/dashboard/messenger",
+      icon: <MessageSquare size={20} />,
+    },
   ],
   4: [
     // Pharmacy
@@ -85,6 +101,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       label: "Inventory",
       path: "/dashboard/inventory",
       icon: <Activity size={20} />,
+    },
+    {
+      label: "Messages",
+      path: "/dashboard/messenger",
+      icon: <MessageSquare size={20} />,
     },
   ],
   5: [
@@ -99,6 +120,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       path: "/dashboard/results",
       icon: <FileText size={20} />,
     },
+    {
+      label: "Messages",
+      path: "/dashboard/messenger",
+      icon: <MessageSquare size={20} />,
+    },
   ],
   6: [
     // Logistics
@@ -111,6 +137,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       label: "Earnings",
       path: "/dashboard/earnings",
       icon: <Activity size={20} />,
+    },
+    {
+      label: "Messages",
+      path: "/dashboard/messenger",
+      icon: <MessageSquare size={20} />,
     },
   ],
   7: [
@@ -125,6 +156,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       path: "/dashboard/payments",
       icon: <Activity size={20} />,
     },
+    {
+      label: "Messages",
+      path: "/dashboard/messenger",
+      icon: <MessageSquare size={20} />,
+    },
   ],
   8: [
     // Super Admin
@@ -137,6 +173,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       label: "Global Settings",
       path: "/super-admin/settings",
       icon: <FileText size={20} />,
+    },
+    {
+      label: "Messages",
+      path: "/dashboard/messenger",
+      icon: <MessageSquare size={20} />,
     },
   ],
 };

@@ -8,8 +8,8 @@ import {
   Zap,
 } from "lucide-react";
 import logoUrl from "../assets/img/logo.jpg";
-import Navbar from "../components/ui/Navbar";
-import { useAuthStore } from "../store/useAuthStore";
+import Navbar from "../../components/ui/Navbar";
+import { useAuthStore } from "../../store/useAuthStore";
 import { motion } from "framer-motion";
 
 const Landing = () => {

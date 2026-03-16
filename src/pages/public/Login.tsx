@@ -13,11 +13,11 @@ import {
 } from "lucide-react";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { useAuthStore } from "../store/useAuthStore";
-import api from "../lib/api";
-import logoUrl from "../assets/img/logo.jpg";
-import { ROLE_REDIRECT } from "../utils/roleRedirect";
-import Navbar from "../components/ui/Navbar";
+import { useAuthStore } from "../../store/useAuthStore";
+import api from "../../lib/api";
+import logoUrl from "../../assets/img/logo.jpg";
+import { ROLE_REDIRECT } from "../../utils/roleRedirect";
+import Navbar from "../../components/ui/Navbar";
 import { motion } from "framer-motion";
 
 interface LoginResponse {

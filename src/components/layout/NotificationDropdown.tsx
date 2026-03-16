@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Bell, User } from "lucide-react";
 import { toast } from "react-toastify";
 import { useAuthStore } from "../../store/useAuthStore";
-import { useChatStore } from "../../store/useChatStore";
+import { useChatStore, type RoomNotification } from "../../store/useChatStore";
 import api from "../../lib/api";
 
 const NotificationDropdown = () => {
@@ -11,7 +11,7 @@ const NotificationDropdown = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { token, user } = useAuthStore();
-  const { incomingRequests, removeIncomingRequest, handleMatchFound } =
+  const { incomingRequests, removeIncomingRequest, handleMatchFound, fetchRecentConversations } =
     useChatStore();
 
   // Close dropdown when clicking outside
@@ -38,14 +38,28 @@ const NotificationDropdown = () => {
   ) => {
     setProcessingId(patientId);
     try {
-      await api.post(`/api/chat/${action}`, { patient_id: patientId });
+      // Find the specific request to get the consultation_id
+      const request = requests.find(r => r.patientId === patientId);
+      const payload: Record<string, string> = { patient_id: patientId };
+      
+      if (action === "accept" && request?.consultationId) {
+        payload.consultation_id = request.consultationId;
+      }
 
-      if (action === "accept" && token) {
+      const response = await api.post(`/api/chat/${action}`, payload);
+      const { conversation_id } = response.data;
+
+      if (action === "accept" && token && conversation_id) {
         toast.success("Consultation accepted. Opening chat...");
         // Ensure we pass the appropriate IDs. The notification has the patientId.
         // We know the doctorId is the current user since this is the doctor view.
-        handleMatchFound(user!.id, patientId, token);
-      } else {
+        handleMatchFound(user!.id, patientId, conversation_id);
+      } else if (action === "accept") {
+        // Fallback for unexpected missing ID
+        toast.success("Consultation accepted.");
+        fetchRecentConversations(); 
+      }
+ else {
         toast.info("Consultation rejected.");
       }
       removeIncomingRequest(patientId);
@@ -89,7 +103,7 @@ const NotificationDropdown = () => {
               </div>
             ) : (
               <div className="divide-y divide-slate-100">
-                {requests.map((req) => (
+                {requests.map((req: RoomNotification) => (
                   <div
                     key={req.patientId}
                     className="p-4 hover:bg-slate-50 transition-colors"

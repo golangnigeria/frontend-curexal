@@ -4,15 +4,15 @@ import { PublicRoute } from "./PublicRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
 
 // Public Pages
-import Landing from "../pages/Landing";
-import Features from "../pages/Features";
-import Doctors from "../pages/Doctors";
-import About from "../pages/About";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import ForgotPassword from "../pages/ForgotPassword";
-import ResetPassword from "../pages/ResetPassword";
-import VerifyEmail from "../pages/VerifyEmail";
+import Landing from "../pages/public/Landing";
+import Features from "../pages/public/Features";
+import Doctors from "../pages/public/Doctors";
+import About from "../pages/public/About";
+import Login from "../pages/public/Login";
+import Register from "../pages/public/Register";
+import ForgotPassword from "../pages/public/ForgotPassword";
+import ResetPassword from "../pages/public/ResetPassword";
+import VerifyEmail from "../pages/public/VerifyEmail";
 
 // Patient Pages
 import PatientDashboard from "../pages/patient/PatientDashboard";
@@ -30,6 +30,7 @@ import DoctorPrescriptions from "../pages/doctor/DoctorPrescriptions";
 import CareAgentDashboard from "../pages/care-agent/CareAgentDashboard";
 import ProxyRegistration from "../pages/care-agent/ProxyRegistration";
 import PaymentCoordination from "../pages/care-agent/PaymentCoordination";
+import MessengerPage from "../pages/messenger/MessengerPage";
 import { useAuthStore } from "../store/useAuthStore";
 
 export const AppRoutes = () => {
@@ -89,6 +90,9 @@ export const AppRoutes = () => {
         {/* Doctor Only */}
         <Route path="prescriptions" element={<DoctorPrescriptions />} />
 
+        {/* Messenger */}
+        <Route path="messenger" element={<MessengerPage />} />
+
         {/* Placeholder Routes for Other Roles to prevent redirect loops */}
         <Route
           path="admin/dashboard"
@@ -114,24 +118,10 @@ export const AppRoutes = () => {
           path="logistics/dashboard"
           element={<div className="p-8">Logistics Dashboard - Coming Soon</div>}
         />
-        <Route
-          path="field-users"
-          element={<ProxyRegistration />}
-        />
-        <Route
-          path="field-users/new"
-          element={<ProxyRegistration />}
-        />
-        <Route
-          path="payments"
-          element={<PaymentCoordination />}
-        />
-        <Route
-          path="care-agent/dashboard"
-          element={
-            <CareAgentDashboard />
-          }
-        />
+        <Route path="field-users" element={<ProxyRegistration />} />
+        <Route path="field-users/new" element={<ProxyRegistration />} />
+        <Route path="payments" element={<PaymentCoordination />} />
+        <Route path="care-agent/dashboard" element={<CareAgentDashboard />} />
       </Route>
 
       {/* Catch all */}

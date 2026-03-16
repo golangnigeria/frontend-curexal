@@ -14,6 +14,7 @@ import {
 import api from "../lib/api";
 import { AIChatWidget } from "../components/AIChatWidget";
 import NotificationDropdown from "../components/layout/NotificationDropdown";
+import MessengerDropdown from "../components/layout/MessengerDropdown";
 import logoUrl from "../assets/img/logo.jpg";
 import { NAVIGATION_CONFIG } from "../utils/navigationConfig";
 import { ROLE_REDIRECT } from "../utils/roleRedirect";
@@ -222,6 +223,7 @@ const DashboardLayout = () => {
           </div>
 
           <div className="flex items-center gap-3 sm:gap-6">
+            <MessengerDropdown />
             <NotificationDropdown />
             <div className="h-10 w-10 rounded-2xl bg-slate-900 flex items-center justify-center font-black text-white text-xs border-2 border-slate-200 shadow-xl lg:rotate-3 transition-transform hover:rotate-0 cursor-pointer">
               {user.name?.charAt(0).toUpperCase()}

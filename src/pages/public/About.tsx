@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { Heart, Target, ShieldCheck, Cpu, ArrowRight } from "lucide-react";
-import Navbar from "../components/ui/Navbar";
+import Navbar from "../../components/ui/Navbar";
 import { Link } from "react-router-dom";
-import { useAuthStore } from "../store/useAuthStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const About = () => {
   const { user } = useAuthStore();
