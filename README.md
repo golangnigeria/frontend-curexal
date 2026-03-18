@@ -118,3 +118,6 @@ Curexal can be deployed as a unified container or as decoupled services (recomme
 
 ## 📜 License
 Curexal is proprietary software. &copy; 2026 GolangNigeria. All rights reserved.
+
+Database password for supabase
+LVRFPvVKiTKfX1Q6
