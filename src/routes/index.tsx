@@ -25,12 +25,15 @@ import PatientReminders from "../pages/patient/PatientReminders";
 import DoctorDashboard from "../pages/doctor/DoctorDashboard";
 import DoctorAppointments from "../pages/doctor/DoctorAppointments";
 import DoctorPrescriptions from "../pages/doctor/DoctorPrescriptions";
+import DoctorAvailability from "../pages/doctor/DoctorAvailability";
 
 // Care Agent Pages
 import CareAgentDashboard from "../pages/care-agent/CareAgentDashboard";
 import ProxyRegistration from "../pages/care-agent/ProxyRegistration";
 import PaymentCoordination from "../pages/care-agent/PaymentCoordination";
 import MessengerPage from "../pages/messenger/MessengerPage";
+import FinanceDashboard from "../pages/shared/FinanceDashboard";
+import MeetingRoom from "../pages/shared/MeetingRoom";
 import { useAuthStore } from "../store/useAuthStore";
 
 export const AppRoutes = () => {
@@ -86,9 +89,12 @@ export const AppRoutes = () => {
             user?.role === 3 ? <DoctorAppointments /> : <PatientAppointments />
           }
         />
+        <Route path="finances" element={<FinanceDashboard />} />
+        <Route path="meeting/:id" element={<MeetingRoom />} />
 
         {/* Doctor Only */}
         <Route path="prescriptions" element={<DoctorPrescriptions />} />
+        <Route path="schedule" element={<DoctorAvailability />} />
 
         {/* Messenger */}
         <Route path="messenger" element={<MessengerPage />} />

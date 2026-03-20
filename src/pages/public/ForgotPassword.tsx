@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail, ArrowLeft, Shield, AlertCircle } from "lucide-react";
-import api from "../lib/api";
+import api from "../../lib/api";
 // import { ThemeToggle } from '../components/ThemeToggle';
-import logoUrl from "../assets/img/logo.jpg";
+import logoUrl from "../../assets/img/logo.jpg";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");

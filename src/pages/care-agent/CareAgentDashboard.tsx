@@ -17,7 +17,7 @@ const CareAgentDashboard = () => {
 
   useEffect(() => {
     // In the future, this is where we would fetch real stats from the API
-    // api.get('/api/care-agent/stats').then(res => setStats(res.data));
+    // api.get('/care-agent/stats').then(res => setStats(res.data));
   }, []);
 
   return (

@@ -11,19 +11,7 @@ const api = axios.create({
   },
 });
 
-// Request interceptor to attach Bearer token
-api.interceptors.request.use(
-  (config) => {
-    const token = useAuthStore.getState().token;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+// Request interceptor removed as cookies are handled automatically by the browser with withCredentials: true.
 
 // Response interceptor to handle 401s and token refresh
 api.interceptors.response.use(
@@ -44,17 +32,13 @@ api.interceptors.response.use(
       
       try {
         // Attempt to refresh the token using the HTTP-only cookie
-        const res = await axios.post(`${BASE_URL}/auth/refresh`, {}, {
+        await axios.post(`${BASE_URL}/auth/refresh`, {}, {
           withCredentials: true
         });
         
-        const newToken = res.data.tokenPairs.access_token;
+        // No need to setToken manually - backend sets cookies automatically
         
-        // Update Zustand store
-        useAuthStore.getState().setToken(newToken);
-        
-        // Update original request header and retry
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        // Retry original request (cookies will be included)
         return api(originalRequest);
         
       } catch (refreshError) {

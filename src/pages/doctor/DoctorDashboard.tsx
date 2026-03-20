@@ -13,7 +13,7 @@ const DoctorDashboard = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await api.get("/api/doctors/profile");
+        const response = await api.get("/doctors/profile");
         if (response.data && typeof response.data.is_online !== "undefined") {
           setIsOnline(response.data.is_online);
         }
@@ -30,7 +30,7 @@ const DoctorDashboard = () => {
     const newStatus = !isOnline;
 
     try {
-      await api.put("/api/doctors/online_status", { is_online: newStatus });
+      await api.put("/doctors/online_status", { is_online: newStatus });
       setIsOnline(newStatus);
       toast.success(
         newStatus

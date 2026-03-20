@@ -59,12 +59,11 @@ const Login = () => {
       });
 
       const {
-        access_token,
         requires_onboarding,
         user: loggedInUser,
       } = response.data;
 
-      setAuth(loggedInUser, access_token, requires_onboarding);
+      setAuth(loggedInUser, requires_onboarding);
       toast.success("Login successful 🎉");
 
       // If intent is consult and user is a patient, redirect straight to dashboard

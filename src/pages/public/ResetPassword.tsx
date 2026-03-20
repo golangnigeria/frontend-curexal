@@ -7,9 +7,9 @@ import {
   ArrowRight,
   CheckCircle2,
 } from "lucide-react";
-import api from "../lib/api";
-import logoUrl from "../assets/img/logo.jpg";
-import Navbar from "../components/ui/Navbar";
+import api from "../../lib/api";
+import logoUrl from "../../assets/img/logo.jpg";
+import Navbar from "../../components/ui/Navbar";
 import { motion } from "framer-motion";
 
 const ResetPassword = () => {

@@ -10,7 +10,7 @@ const NotificationDropdown = () => {
   const [processingId, setProcessingId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { token, user } = useAuthStore();
+  const { user } = useAuthStore();
   const { incomingRequests, removeIncomingRequest, handleMatchFound, fetchRecentConversations } =
     useChatStore();
 
@@ -46,10 +46,10 @@ const NotificationDropdown = () => {
         payload.consultation_id = request.consultationId;
       }
 
-      const response = await api.post(`/api/chat/${action}`, payload);
+      const response = await api.post(`/chat/${action}`, payload);
       const { conversation_id } = response.data;
 
-      if (action === "accept" && token && conversation_id) {
+      if (action === "accept" && conversation_id) {
         toast.success("Consultation accepted. Opening chat...");
         // Ensure we pass the appropriate IDs. The notification has the patientId.
         // We know the doctorId is the current user since this is the doctor view.

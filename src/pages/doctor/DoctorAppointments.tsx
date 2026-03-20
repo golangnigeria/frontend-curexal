@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Calendar,
@@ -13,6 +14,7 @@ export const DoctorAppointments = () => {
   const [activeTab, setActiveTab] = useState<
     "pending" | "accepted" | "completed"
   >("pending");
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-6">
@@ -135,7 +137,10 @@ export const DoctorAppointments = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors">
+                  <button 
+                    onClick={() => navigate("/dashboard/meeting/123e4567-e89b-12d3-a456-426614174000")}
+                    className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
                     Start Consultation
                   </button>
                   <button

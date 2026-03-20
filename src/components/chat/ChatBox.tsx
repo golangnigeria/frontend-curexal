@@ -21,11 +21,11 @@ const ChatBox = () => {
     readReceipts,
     uploadChatAttachment
   } = useChatStore();
-  const { user, token } = useAuthStore();
+  const { user } = useAuthStore();
   const [msgInput, setMsgInput] = useState("");
   const [isMinimized, setIsMinimized] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const typingTimeoutRef = useRef<number | null>(null);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileClick = () => {
@@ -47,13 +47,13 @@ const ChatBox = () => {
 
   // Fetch history and connect socket when chat opens
   useEffect(() => {
-    if (isChatOpen && activeConversationId && token) {
+    if (isChatOpen && activeConversationId) {
       fetchChatHistory(activeConversationId, true);
-      connectChatSocket(token, activeConversationId);
+      connectChatSocket(activeConversationId);
       // Send read receipt when opening chat
       sendReadReceipt();
     }
-  }, [isChatOpen, activeConversationId, token, fetchChatHistory, connectChatSocket, sendReadReceipt]);
+  }, [isChatOpen, activeConversationId, fetchChatHistory, connectChatSocket, sendReadReceipt]);
 
   const activeConv = recentConversations.find((c: Conversation) => c.id === activeConversationId);
   const otherUserName = activeConv?.other_user_name || (user?.role_name === "doctor" ? "Patient" : "Doctor");

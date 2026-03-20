@@ -9,6 +9,8 @@ import {
   LayoutDashboard,
   Truck,
   MessageSquare,
+  Clock,
+  Wallet,
 } from "lucide-react";
 
 // Define a type for nav items
@@ -66,6 +68,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       path: "/dashboard/messenger",
       icon: <MessageSquare size={20} />,
     },
+    {
+      label: "Finances",
+      path: "/dashboard/finances",
+      icon: <Wallet size={20} />,
+    },
   ],
   3: [
     // Doctor
@@ -73,6 +80,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       label: "Appointments",
       path: "/dashboard/appointments", // or /doctor/appointments if you prefer
       icon: <Calendar size={20} />,
+    },
+    {
+      label: "My Schedule",
+      path: "/dashboard/schedule",
+      icon: <Clock size={20} />,
     },
     {
       label: "Prescriptions",
@@ -88,6 +100,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       label: "Messages",
       path: "/dashboard/messenger",
       icon: <MessageSquare size={20} />,
+    },
+    {
+      label: "Finances",
+      path: "/dashboard/finances",
+      icon: <Wallet size={20} />,
     },
   ],
   4: [
@@ -107,6 +124,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       path: "/dashboard/messenger",
       icon: <MessageSquare size={20} />,
     },
+    {
+      label: "Finances",
+      path: "/dashboard/finances",
+      icon: <Wallet size={20} />,
+    },
   ],
   5: [
     // Laboratory
@@ -124,6 +146,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       label: "Messages",
       path: "/dashboard/messenger",
       icon: <MessageSquare size={20} />,
+    },
+    {
+      label: "Finances",
+      path: "/dashboard/finances",
+      icon: <Wallet size={20} />,
     },
   ],
   6: [
@@ -160,6 +187,11 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       label: "Messages",
       path: "/dashboard/messenger",
       icon: <MessageSquare size={20} />,
+    },
+    {
+      label: "Finances",
+      path: "/dashboard/finances",
+      icon: <Wallet size={20} />,
     },
   ],
   8: [

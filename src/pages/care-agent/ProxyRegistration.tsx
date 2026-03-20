@@ -47,7 +47,7 @@ const ProxyRegistration = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post('/api/care-agent/register-patient', formData);
+      await api.post('/care-agent/register-patient', formData);
       toast.success('Patient registered successfully!');
       setIsSuccess(true);
       setLoading(false);

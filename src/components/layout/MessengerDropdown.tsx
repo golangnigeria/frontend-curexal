@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MessageSquare, Search, MoreHorizontal } from 'lucide-react';
 import { useChatStore, type Conversation } from '../../store/useChatStore';
-import { useAuthStore } from '../../store/useAuthStore';
 
 const formatTime = (date: Date) => {
   const now = new Date();
@@ -18,7 +17,6 @@ const MessengerDropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { recentConversations, fetchRecentConversations, setActiveConversation } = useChatStore();
-  const { token } = useAuthStore();
 
   useEffect(() => {
     if (isOpen) {
@@ -37,10 +35,8 @@ const MessengerDropdown: React.FC = () => {
   }, []);
 
   const onConversationClick = (conv: Conversation) => {
-    if (token) {
-      setActiveConversation(conv);
-      setIsOpen(false);
-    }
+    setActiveConversation(conv);
+    setIsOpen(false);
   };
 
   return (

@@ -58,10 +58,10 @@ interface ChatState {
   readReceipts: Record<string, string>; // userId -> timestamp
 
   // Actions
-  connectNotifySocket: (token: string) => void;
+  connectNotifySocket: () => void;
   disconnectNotifySocket: () => void;
   
-  connectChatSocket: (token: string, conversationId: string) => void;
+  connectChatSocket: (conversationId: string) => void;
   disconnectChatSocket: () => void;
   
   sendMessage: (msg: string, messageType?: string) => void;
@@ -111,7 +111,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   typingUsers: new Set(),
   readReceipts: {},
 
-  connectNotifySocket: (token: string) => {
+  connectNotifySocket: () => {
     if (get().notifySocket) return;
 
     let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -120,7 +120,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
     const connect = () => {
       console.log(`Attempting to connect Notify WS (Attempt ${retryCount + 1}) to ${WS_BASE_URL}/chat/notify...`);
-      const ws = new WebSocket(`${WS_BASE_URL}/chat/notify?token=${token}`);
+      const ws = new WebSocket(`${WS_BASE_URL}/chat/notify`);
 
       ws.onopen = () => {
         console.log("Notify WS Connected");
@@ -207,7 +207,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     get().fetchRecentConversations(); // Sync the sidebar too
   },
 
-  connectChatSocket: (token: string, conversationId: string) => {
+  connectChatSocket: (conversationId: string) => {
     const { chatSocket, activeConversationId } = get();
     
     // 1. Idempotency: skip if already connected to this room
@@ -221,7 +221,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
 
     console.log(`Connecting to Chat WS for conversation: ${conversationId}`);
-    const ws = new WebSocket(`${WS_BASE_URL}/chat/ws?conversation_id=${conversationId}&token=${token}`);
+    const ws = new WebSocket(`${WS_BASE_URL}/chat/ws?conversation_id=${conversationId}`);
 
     ws.onopen = () => console.log("Chat WS Connected");
     
@@ -438,7 +438,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   fetchRecentConversations: async () => {
     try {
-      const { data } = await api.get("/api/chat/conversations");
+      const { data } = await api.get("/chat/conversations");
       console.log("Conversations:", data);
       set({ recentConversations: data || [] });
     } catch (err) {
@@ -451,7 +451,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       const limit = 50;
       const offset = reset ? 0 : get().messageOffset;
       console.log(`Fetching history for ${conversationId}, reset=${reset}, offset=${offset}`);
-      const { data } = await api.get(`/api/chat/conversations/${conversationId}/messages?limit=${limit}&offset=${offset}`);
+      const { data } = await api.get(`/chat/conversations/${conversationId}/messages?limit=${limit}&offset=${offset}`);
       
       set((state) => {
         const newMessages = data as ChatMessage[];

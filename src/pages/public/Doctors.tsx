@@ -9,9 +9,9 @@ import {
   ShieldCheck,
   Award,
 } from "lucide-react";
-import Navbar from "../components/ui/Navbar";
+import Navbar from "../../components/ui/Navbar";
 import { Link } from "react-router-dom";
-import { useAuthStore } from "../store/useAuthStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import { useState } from "react";
 
 const Doctors = () => {

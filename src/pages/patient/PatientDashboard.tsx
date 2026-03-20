@@ -12,6 +12,7 @@ import api from "../../lib/api";
 import { toast } from "react-toastify";
 import SpecialtySelectorModal from "../../components/chat/SpecialtySelectorModal";
 import ChatBox from "../../components/chat/ChatBox";
+import { AxiosError } from "axios";
 
 interface DashboardRecord {
   status?: string;
@@ -49,18 +50,19 @@ const PatientDashboard = () => {
       // but we send it for future-proofing or if the backend processes it).
       const payload = { specialty: specialtyId };
 
-      const response = await api.post("/api/chat/request", payload);
+      const response = await api.post("/chat/request", payload);
 
       if (response.data?.doctor_id) {
         toast.info("Match found! Waiting for the doctor to accept...");
         setIsSpecialtyModalOpen(false);
         // The background Notify WebSocket will receive the "request_accepted" event automatically
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Matchmaking error", err);
+      const axiosError = err as AxiosError<{ detail?: string }>;
       // Give the patient a nice response if no doctors are online/available
       toast.error(
-        err.response?.data?.detail ||
+        axiosError.response?.data?.detail ||
           "No doctors are currently available for this specialty. Please try again later or schedule an appointment.",
         { autoClose: 6000 },
       );
@@ -90,10 +92,10 @@ const PatientDashboard = () => {
         // Fetch all data in parallel efficiently
         const [apptsRes, testsRes, rxRes, remindersRes] =
           await Promise.allSettled([
-            api.get("/api/patients/appointments"),
-            api.get("/api/patients/tests"),
-            api.get("/api/patients/prescriptions"),
-            api.get("/api/patients/reminders"),
+            api.get("/patients/appointments"),
+            api.get("/patients/tests"),
+            api.get("/patients/prescriptions"),
+            api.get("/patients/reminders"),
           ]);
 
         setCounts({

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import {
@@ -8,6 +10,7 @@ import {
   User as UserIcon,
   Menu,
   X,
+  ChevronLeft,
   ChevronRight,
   Search,
 } from "lucide-react";
@@ -20,27 +23,30 @@ import { NAVIGATION_CONFIG } from "../utils/navigationConfig";
 import { ROLE_REDIRECT } from "../utils/roleRedirect";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../lib/utils";
-import { useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
 
+
 const DashboardLayout = () => {
-  const { user, logout, token } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const { connectNotifySocket, disconnectNotifySocket } = useChatStore();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<{ label: string; rect: DOMRect; isRose?: boolean } | null>(null);
+
 
   useEffect(() => {
-    if (token) {
-      connectNotifySocket(token);
+    if (user) {
+      connectNotifySocket();
     }
     return () => {
       disconnectNotifySocket();
     };
-  }, [token, connectNotifySocket, disconnectNotifySocket]);
+  }, [user, connectNotifySocket, disconnectNotifySocket]);
 
   const handleLogout = async () => {
     try {
-      await api.post("/api/logout");
+      await api.post("/logout");
     } catch (err) {
       console.error("Logout failed on the backend:", err);
     } finally {
@@ -66,26 +72,44 @@ const DashboardLayout = () => {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-70 w-72 m-4 rounded-3xl bg-slate-900 text-white shadow-2xl transition-transform duration-500 ease-[0.16, 1, 0.3, 1] lg:relative lg:translate-x-0 lg:m-6 lg:mr-0",
+          "fixed inset-y-0 left-0 z-70 m-4 rounded-3xl bg-slate-900 text-white shadow-2xl transition-all duration-500 ease-[0.16, 1, 0.3, 1] lg:relative lg:translate-x-0 lg:m-6 lg:mr-0",
+          isSidebarCollapsed ? "lg:w-20" : "lg:w-72",
           isMobileMenuOpen
-            ? "translate-x-0"
+            ? "translate-x-0 w-72"
             : "-translate-x-[120%] lg:translate-x-0",
         )}
       >
-        <div className="h-full flex flex-col p-6">
-          <div className="flex items-center justify-between mb-10 px-2">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-white p-1.5 shadow-xl sm:rotate-3">
+        <div className={cn("h-full flex flex-col p-6", isSidebarCollapsed && "lg:p-4 lg:items-center")}>
+
+
+          <div className="flex items-center justify-between mb-10 px-2 w-full">
+            <Link to="/" className="flex items-center gap-3 overflow-hidden">
+              <div className="h-10 w-10 shrink-0 rounded-xl bg-white p-1.5 shadow-xl sm:rotate-3">
                 <img
                   src={logoUrl}
                   alt="Logo"
                   className="h-full w-full object-cover rounded-lg"
                 />
               </div>
-              <span className="text-xl font-black tracking-tighter">
-                CUREXAL
-              </span>
+              <AnimatePresence>
+                {!isSidebarCollapsed && (
+                  <motion.span 
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    className="text-xl font-black tracking-tighter whitespace-nowrap"
+                  >
+                    CUREXAL
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </Link>
+            <button
+              className="hidden lg:flex p-2 hover:bg-white/10 rounded-xl transition-colors ml-auto translate-x-3"
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            >
+              {isSidebarCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+            </button>
             <button
               className="lg:hidden p-2 hover:bg-white/10 rounded-xl transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
@@ -94,32 +118,41 @@ const DashboardLayout = () => {
             </button>
           </div>
 
-          <nav className="flex-1 space-y-1.5 overflow-y-auto custom-scrollbar pr-2">
+          <nav className={cn("flex-1 space-y-1.5 overflow-y-auto custom-scrollbar pr-2 w-full", isSidebarCollapsed && "lg:pr-0")} onScroll={() => setHoveredItem(null)}>
             <NavLink
               to={ROLE_REDIRECT[user.role] ?? "/dashboard"}
               end
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group",
+                  "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group relative",
                   isActive
                     ? "bg-primary-600 text-white shadow-lg shadow-primary-600/30"
                     : "text-slate-400 hover:text-white hover:bg-white/5",
+                  isSidebarCollapsed && "lg:justify-center lg:px-0 lg:w-12 lg:mx-auto"
                 )
               }
+              onMouseEnter={(e) => isSidebarCollapsed && setHoveredItem({ label: "Dashboard", rect: e.currentTarget.getBoundingClientRect() })}
+              onMouseLeave={() => setHoveredItem(null)}
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <Home size={18} />
-              <span>Dashboard</span>
-              <ChevronRight
-                size={14}
-                className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
-              />
+              <Home size={18} className="shrink-0" />
+              {!isSidebarCollapsed && <span>Dashboard</span>}
+              {!isSidebarCollapsed && (
+                <ChevronRight
+                  size={14}
+                  className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
+                />
+              )}
             </NavLink>
 
-            <div className="py-4">
-              <span className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                Menu
-              </span>
+            <div className="py-4 overflow-hidden h-12 flex items-center">
+              {!isSidebarCollapsed ? (
+                <span className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap">
+                  Menu
+                </span>
+              ) : (
+                <div className="w-8 h-px bg-slate-800 mx-auto" />
+              )}
             </div>
 
             {NAVIGATION_CONFIG[user.role]?.map((item) => (
@@ -128,80 +161,120 @@ const DashboardLayout = () => {
                 to={item.path}
                 className={({ isActive }) =>
                   cn(
-                    "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group",
+                    "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group relative",
                     isActive
                       ? "bg-primary-600 text-white shadow-lg shadow-primary-600/30"
                       : "text-slate-400 hover:text-white hover:bg-white/5",
+                    isSidebarCollapsed && "lg:justify-center lg:px-0 lg:w-12 lg:mx-auto"
                   )
                 }
+                onMouseEnter={(e) => isSidebarCollapsed && setHoveredItem({ label: item.label, rect: e.currentTarget.getBoundingClientRect() })}
+                onMouseLeave={() => setHoveredItem(null)}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {item.icon}
-                <span>{item.label}</span>
+                <span className="shrink-0">{item.icon}</span>
+                {!isSidebarCollapsed && <span className="whitespace-nowrap">{item.label}</span>}
               </NavLink>
             ))}
 
-            <div className="py-4 mt-4 border-t border-white/5">
-              <span className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                Account
-              </span>
+            <div className="py-4 mt-4 border-t border-white/5 overflow-hidden h-12 flex items-center">
+              {!isSidebarCollapsed ? (
+                <span className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap">
+                  Account
+                </span>
+              ) : (
+                <div className="w-8 h-px bg-slate-800 mx-auto" />
+              )}
             </div>
 
             <NavLink
               to="/dashboard/profile"
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group",
+                  "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group relative",
                   isActive
                     ? "bg-primary-600 text-white shadow-lg shadow-primary-600/30"
                     : "text-slate-400 hover:text-white hover:bg-white/5",
+                  isSidebarCollapsed && "lg:justify-center lg:px-0 lg:w-12 lg:mx-auto"
                 )
               }
+              onMouseEnter={(e) => isSidebarCollapsed && setHoveredItem({ label: "Profile", rect: e.currentTarget.getBoundingClientRect() })}
+              onMouseLeave={() => setHoveredItem(null)}
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <UserIcon size={18} />
-              <span>Profile</span>
+              <UserIcon size={18} className="shrink-0" />
+              {!isSidebarCollapsed && <span>Profile</span>}
             </NavLink>
 
             <NavLink
               to="/dashboard/settings"
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group",
+                  "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all group relative",
                   isActive
                     ? "bg-primary-600 text-white shadow-lg shadow-primary-600/30"
                     : "text-slate-400 hover:text-white hover:bg-white/5",
+                  isSidebarCollapsed && "lg:justify-center lg:px-0 lg:w-12 lg:mx-auto"
                 )
               }
+              onMouseEnter={(e) => isSidebarCollapsed && setHoveredItem({ label: "Settings", rect: e.currentTarget.getBoundingClientRect() })}
+              onMouseLeave={() => setHoveredItem(null)}
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <Settings size={18} />
-              <span>Settings</span>
+              <Settings size={18} className="shrink-0" />
+              {!isSidebarCollapsed && <span>Settings</span>}
             </NavLink>
           </nav>
 
-          <div className="mt-auto pt-6 border-t border-white/5">
-            <div className="flex items-center gap-3 px-4 mb-6">
-              <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center font-black text-primary-400">
+          <div className={cn("mt-auto pt-6 border-t border-white/5 w-full", isSidebarCollapsed && "flex flex-col items-center")}>
+            <div className={cn("flex items-center gap-3 px-4 mb-6", isSidebarCollapsed && "lg:px-0 lg:justify-center")}>
+              <div className="h-10 w-10 shrink-0 rounded-xl bg-white/10 flex items-center justify-center font-black text-primary-400">
                 {user.name?.charAt(0).toUpperCase()}
               </div>
-              <div className="flex flex-col overflow-hidden">
-                <span className="text-sm font-bold truncate">{user.name}</span>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                  {user.role_name}
-                </span>
-              </div>
+              {!isSidebarCollapsed && (
+                <div className="flex flex-col overflow-hidden">
+                  <span className="text-sm font-bold truncate">{user.name}</span>
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    {user.role_name}
+                  </span>
+                </div>
+              )}
             </div>
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold text-rose-400 hover:bg-rose-500/10 transition-all active:scale-95"
+              onMouseEnter={(e) => isSidebarCollapsed && setHoveredItem({ label: "Sign Out", rect: e.currentTarget.getBoundingClientRect(), isRose: true })}
+              onMouseLeave={() => setHoveredItem(null)}
+              className={cn(
+                "w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold text-rose-400 hover:bg-rose-500/10 transition-all active:scale-95 relative group",
+                isSidebarCollapsed && "lg:justify-center lg:px-0 lg:w-12"
+              )}
             >
-              <LogOut size={18} />
-              Sign Out
+              <LogOut size={18} className="shrink-0" />
+              {!isSidebarCollapsed && <span>Sign Out</span>}
             </button>
           </div>
         </div>
       </aside>
+
+      {/* PORTAL TOOLTIP */}
+      {hoveredItem && createPortal(
+        <motion.div
+           initial={{ opacity: 0, x: -10 }}
+           animate={{ opacity: 1, x: 0 }}
+           className={cn(
+             "fixed px-3 py-2 text-white text-[11px] font-bold rounded-lg z-100 shadow-xl pointer-events-none whitespace-nowrap",
+             hoveredItem.isRose ? "bg-rose-500" : "bg-slate-900 border border-white/10"
+           )}
+           style={{
+             top: hoveredItem.rect.top + (hoveredItem.rect.height / 2),
+             left: hoveredItem.rect.right + 12,
+             transform: 'translateY(-50%)'
+           }}
+        >
+          {hoveredItem.label}
+        </motion.div>,
+        document.body
+      )}
 
       <main className="flex-1 flex flex-col min-w-0 bg-[#f8fafc] relative">
         <header className="h-20 lg:h-24 px-6 lg:px-10 flex items-center justify-between shrink-0">
@@ -231,7 +304,14 @@ const DashboardLayout = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-x-hidden overflow-y-auto custom-scrollbar px-6 lg:px-10 pb-10">
+        <div 
+          className={cn(
+            "flex-1 custom-scrollbar",
+            location.pathname.includes('/messenger') 
+              ? "overflow-hidden px-0 pb-0" 
+              : "overflow-x-hidden overflow-y-auto px-6 lg:px-10 pb-10"
+          )}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -239,26 +319,48 @@ const DashboardLayout = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
-              className="h-full"
+              className={cn("h-full", location.pathname.includes('/messenger') && "flex flex-col")}
             >
-              <div className="mb-10">
-                <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-2 uppercase">
-                  {location.pathname === "/dashboard"
-                    ? "Overview"
-                    : location.pathname.split("/").pop()?.replace("-", " ")}
-                </h1>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                  <span className="w-8 h-px bg-slate-200" />
-                  Dashboard Control
-                </p>
-              </div>
+              {!location.pathname.includes('/messenger') && (
+                <div className="mb-10">
+                  <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-2 uppercase">
+                    {location.pathname === "/dashboard"
+                      ? "Overview"
+                      : location.pathname.split("/").pop()?.replace("-", " ")}
+                  </h1>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                    <span className="w-8 h-px bg-slate-200" />
+                    Dashboard Control
+                  </p>
+                </div>
+              )}
               <Outlet />
             </motion.div>
           </AnimatePresence>
         </div>
       </main>
 
-      <AIChatWidget />
+      {!location.pathname.includes('/messenger') && <AIChatWidget />}
+
+      {/* PORTAL TOOLTIP */}
+      {hoveredItem && createPortal(
+        <motion.div
+           initial={{ opacity: 0, x: -10 }}
+           animate={{ opacity: 1, x: 0 }}
+           className={cn(
+             "fixed px-3 py-2 text-white text-[11px] font-bold rounded-lg z-100 shadow-xl pointer-events-none whitespace-nowrap",
+             hoveredItem.isRose ? "bg-rose-500" : "bg-slate-900 border border-white/10"
+           )}
+           style={{
+             top: hoveredItem.rect.top + (hoveredItem.rect.height / 2),
+             left: hoveredItem.rect.right + 12,
+             transform: 'translateY(-50%)'
+           }}
+        >
+          {hoveredItem.label}
+        </motion.div>,
+        document.body
+      )}
     </div>
   );
 };

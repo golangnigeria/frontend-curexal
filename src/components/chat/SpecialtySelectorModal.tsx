@@ -9,39 +9,7 @@ interface SpecialtySelectorModalProps {
   isLoading: boolean;
 }
 
-const specialties = [
-  {
-    id: "general",
-    name: "General Practice",
-    icon: "👨‍⚕️",
-    desc: "Common illnesses, checkups",
-  },
-  {
-    id: "pediatrics",
-    name: "Pediatrics",
-    icon: "👶",
-    desc: "Child health and development",
-  },
-  {
-    id: "cardiology",
-    name: "Cardiology",
-    icon: "🫀",
-    desc: "Heart and blood vessels",
-  },
-  {
-    id: "dermatology",
-    name: "Dermatology",
-    icon: "🧴",
-    desc: "Skin, hair, and nails",
-  },
-  {
-    id: "psychiatry",
-    name: "Psychiatry",
-    icon: "🧠",
-    desc: "Mental health and therapy",
-  },
-  { id: "gynecology", name: "Gynecology", icon: "🤰", desc: "Women's health" },
-];
+import { SPECIALTIES } from "../../constants/specialties";
 
 const SpecialtySelectorModal = ({
   isOpen,
@@ -53,7 +21,7 @@ const SpecialtySelectorModal = ({
 
   if (!isOpen) return null;
 
-  const filtered = specialties.filter(
+  const filtered = SPECIALTIES.filter(
     (s) =>
       s.name.toLowerCase().includes(search.toLowerCase()) ||
       s.desc.toLowerCase().includes(search.toLowerCase()),
@@ -64,7 +32,7 @@ const SpecialtySelectorModal = ({
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: 1 }}  
           exit={{ opacity: 0 }}
           className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
           onClick={onClose}

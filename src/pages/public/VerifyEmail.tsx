@@ -2,13 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { AxiosError } from "axios";
-import { useAuthStore } from "../store/useAuthStore";
-import api from "../lib/api";
-import { ROLE_REDIRECT } from "../utils/roleRedirect";
-import logoUrl from "../assets/img/logo.jpg";
+import { useAuthStore } from "../../store/useAuthStore";
+import api from "../../lib/api";
+import { ROLE_REDIRECT } from "../../utils/roleRedirect";
+import logoUrl from "../../assets/img/logo.jpg";
 
 interface VerifyResponse {
-  access_token: string;
   requires_onboarding: boolean;
   user: {
     id: string;
@@ -48,13 +47,12 @@ const VerifyEmail = () => {
         });
 
         const {
-          access_token,
           requires_onboarding,
           user: verifiedUser,
         } = response.data;
 
         // Auto-login the user
-        setAuth(verifiedUser, access_token, requires_onboarding);
+        setAuth(verifiedUser, requires_onboarding);
 
         setStatus("success");
 

@@ -20,12 +20,12 @@ const ChatPanel: React.FC = () => {
     readReceipts,
     uploadChatAttachment
   } = useChatStore();
-  const { user, token } = useAuthStore();
+  const { user } = useAuthStore();
   const [msgInput, setMsgInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const [isScrollingUp, setIsScrollingUp] = useState(false);
-  const typingTimeoutRef = useRef<number | null>(null);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const activeConv = recentConversations.find((c: Conversation) => c.id === activeConversationId);
@@ -48,12 +48,12 @@ const ChatPanel: React.FC = () => {
   };
 
   useEffect(() => {
-    if (activeConversationId && token) {
+    if (activeConversationId) {
       fetchChatHistory(activeConversationId, true);
       // Send read receipt when opening conversation
       sendReadReceipt();
     }
-  }, [activeConversationId, token, fetchChatHistory, sendReadReceipt]);
+  }, [activeConversationId, fetchChatHistory, sendReadReceipt]);
 
   useEffect(() => {
     if (!isScrollingUp) {

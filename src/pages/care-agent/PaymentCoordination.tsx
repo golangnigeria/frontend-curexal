@@ -28,7 +28,7 @@ const PaymentCoordination = () => {
 
     setLoading(true);
     try {
-      await api.post('/api/care-agent/fund-wallet', {
+      await api.post('/care-agent/fund-wallet', {
         patient_id: patientId,
         amount: parseFloat(amount)
       });
