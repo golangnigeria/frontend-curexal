@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/';
 // Create an Axios instance
 const api = axios.create({
-  baseURL: BASE_URL, // Proxied to localhost:8080 via vite.config.ts
+  baseURL: `${BASE_URL.replace(/\/$/, '')}/api/v1`,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -33,6 +33,14 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     
+    // Check for incomplete biodata
+    if (error.response?.status === 403 && error.response?.data?.detail === 'REQUIRE_BIODATA') {
+      if (!window.location.pathname.includes('/complete-profile')) {
+        window.location.href = '/complete-profile';
+      }
+      return Promise.reject(error);
+    }
+
     // If error is 401 Unauthorized and we haven't already retried
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Don't attempt refresh or redirect if we're already trying to login
@@ -44,7 +52,7 @@ api.interceptors.response.use(
       
       try {
         // Attempt to refresh the token using the HTTP-only cookie
-        const res = await axios.post(`${BASE_URL}/auth/refresh`, {}, {
+        const res = await axios.post(`${BASE_URL.replace(/\/$/, '')}/api/v1/auth/refresh`, {}, {
           withCredentials: true
         });
         

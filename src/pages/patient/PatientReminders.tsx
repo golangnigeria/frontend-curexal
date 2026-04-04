@@ -12,7 +12,7 @@ export const PatientReminders = () => {
             Never miss a dose. Manage your daily scheduled intakes.
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors">
+        <button className="flex items-center gap-2 bg-primary-400 hover:bg-primary-500 text-white px-4 py-3 rounded-xl text-sm font-bold transition-all shadow-lg shadow-primary-400/20 active:scale-95">
           <Plus size={18} />
           Add Reminder
         </button>
@@ -64,19 +64,19 @@ export const PatientReminders = () => {
         </div>
 
         {/* Prescription Link Notice */}
-        <div className="bg-primary-50 rounded-2xl border border-primary-100 p-6 flex flex-col justify-center items-center text-center">
-          <div className="h-16 w-16 bg-white rounded-full shadow-md flex items-center justify-center mb-4 text-primary-500">
-            <Clock size={32} />
+        <div className="bg-primary-50 rounded-2xl border border-primary-200 p-8 flex flex-col justify-center items-center text-center shadow-sm">
+          <div className="h-20 w-20 bg-white rounded-2xl shadow-xl flex items-center justify-center mb-6 text-primary-400 transform -rotate-6">
+            <Clock size={40} />
           </div>
-          <h3 className="font-bold text-lg text-slate-800 mb-2">
+          <h3 className="font-extrabold text-xl text-accent-500 mb-2 lowercase tracking-tighter">
             Automated Scheduling
           </h3>
-          <p className="text-slate-600 max-w-sm mb-6">
-            When a doctor issues a prescription through Curexal, smart reminders
+          <p className="text-accent-400 max-w-sm mb-8 font-medium italic">
+            When a doctor issues a prescription through curexal, smart reminders
             are automatically added to your daily schedule based on the
             prescribed dosage frequency.
           </p>
-          <button className="px-5 py-2 bg-white text-primary-600 font-semibold rounded-lg shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors">
+          <button className="px-6 py-3 bg-white text-primary-400 font-bold rounded-xl shadow-md border border-primary-100 hover:bg-primary-50 transition-all active:scale-95">
             View Active Prescriptions
           </button>
         </div>

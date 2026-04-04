@@ -14,7 +14,7 @@ interface VerifyResponse {
     id: string;
     name: string;
     email: string;
-    role: number;
+    role: string;
     role_name: string;
   };
 }
@@ -60,7 +60,7 @@ const VerifyEmail = () => {
 
         // Redirect after a short delay so they can see the success message
         setTimeout(() => {
-          navigate(ROLE_REDIRECT[verifiedUser.role] ?? "/dashboard");
+          navigate(ROLE_REDIRECT[verifiedUser.role_name] ?? "/dashboard");
         }, 2000);
       } catch (err) {
         setStatus("error");
@@ -84,22 +84,24 @@ const VerifyEmail = () => {
     <div className="min-h-screen flex flex-col justify-center items-center bg-slate-50 px-4 sm:px-6 lg:px-8">
       {/* Logo & Branding */}
       <div className="flex flex-col items-center mb-8">
-        <img
-          src={logoUrl}
-          alt="Curexal Logo"
-          className="h-20 w-20 rounded-xl object-cover shadow-md border border-slate-100"
-        />
-        <h1 className="mt-4 text-primary-600 font-bold text-3xl sm:text-4xl">
-          Curexal
+        <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-accent-100">
+          <img
+            src={logoUrl}
+            alt="curexal"
+            className="h-10 w-10 object-contain"
+          />
+        </div>
+        <h1 className="mt-4 text-accent-500 font-extrabold text-3xl sm:text-4xl lowercase tracking-tighter">
+          curexal
         </h1>
       </div>
 
       {/* Verification Card */}
       <div className="w-full max-w-md bg-white py-10 px-8 shadow-xl rounded-2xl border border-slate-100 text-center transition-all">
         {status === "loading" && (
-          <div className="flex flex-col items-center animate-pulse">
-            <Loader2 className="w-16 h-16 text-primary-500 animate-spin mb-4" />
-            <h2 className="text-xl font-semibold text-slate-800">
+          <div className="flex flex-col items-center">
+            <Loader2 className="w-16 h-16 text-primary-400 animate-spin mb-4" />
+            <h2 className="text-xl font-bold text-accent-500 lowercase">
               Verifying your email...
             </h2>
             <p className="text-slate-500 mt-2 text-sm">
@@ -110,8 +112,8 @@ const VerifyEmail = () => {
 
         {status === "success" && (
           <div className="flex flex-col items-center">
-            <CheckCircle2 className="w-16 h-16 text-green-500 mb-4" />
-            <h2 className="text-xl font-semibold text-slate-800">
+            <CheckCircle2 className="w-16 h-16 text-primary-400 mb-4" />
+            <h2 className="text-xl font-bold text-accent-500 lowercase">
               Email Verified!
             </h2>
             <p className="text-slate-500 mt-2 text-sm">
@@ -129,7 +131,7 @@ const VerifyEmail = () => {
             <p className="text-slate-500 mt-2 mb-6 text-sm">{errorMessage}</p>
             <Link
               to="/login"
-              className="w-full flex justify-center items-center py-2.5 px-4 rounded-md text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 transition"
+              className="w-full flex justify-center items-center py-4 px-4 rounded-xl text-sm font-bold text-white bg-primary-400 hover:bg-primary-500 transition shadow-lg shadow-primary-400/20"
             >
               Return to Login
             </Link>

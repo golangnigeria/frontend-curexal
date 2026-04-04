@@ -1,139 +1,104 @@
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
-  Stethoscope,
-  HeartPulse,
-  LayoutDashboard,
   ShieldCheck,
-  Zap,
+  Stethoscope,
+  Activity,
+  Calendar,
+  MessageSquare,
+  FileText
 } from "lucide-react";
 import logoUrl from "../assets/img/logo.jpg";
 import Navbar from "../components/ui/Navbar";
 import { useAuthStore } from "../store/useAuthStore";
 import { motion } from "framer-motion";
+import { Button } from "../components/ui/Button";
 
 const Landing = () => {
   const { user } = useAuthStore();
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.3,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-      },
-    },
-  };
-
   return (
-    <div className="min-h-screen bg-background text-slate-900 font-sans selection:bg-primary-100">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-primary-100">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 lg:pt-56 lg:pb-32 overflow-hidden">
-        {/* Subtle Background Glows */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full overflow-hidden -z-10 pointer-events-none opacity-50">
-          <div className="absolute top-[-10%] left-[20%] w-[40%] h-[40%] rounded-full bg-primary-100/40 blur-[120px] animate-pulse" />
-          <div className="absolute bottom-[20%] right-[10%] w-[30%] h-[30%] rounded-full bg-indigo-100/30 blur-[100px]" />
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        {/* Soft Background Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] overflow-hidden -z-10 pointer-events-none">
+          <div className="absolute top-[-20%] left-[20%] w-[60%] h-[60%] rounded-full bg-primary-100/50 blur-[120px]" />
+          <div className="absolute top-[10%] right-[10%] w-[40%] h-[40%] rounded-full bg-slate-200/50 blur-[100px]" />
         </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="max-w-7xl mx-auto px-6 relative z-10 text-center"
-        >
+        <div className="max-w-6xl mx-auto px-6 relative z-10 text-center">
           <motion.div
-            variants={itemVariants}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider mb-8 border border-slate-200"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
           >
-            <Zap size={12} className="text-primary-600" />
-            Empowering Modern Healthcare
-          </motion.div>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-semibold mb-8 shadow-sm">
+              <span className="flex h-2 w-2 rounded-full bg-primary-500"></span>
+              Secure Healthcare Infrastructure
+            </div>
 
-          <motion.h1
-            variants={itemVariants}
-            className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-slate-900 mb-8 leading-[0.9]"
-          >
-            Digital care <br />
-            <span className="text-primary-600">redefined.</span>
-          </motion.h1>
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 mb-6 leading-tight">
+              A unified operating system <br className="hidden md:block" />
+              for modern <span className="text-primary-600">healthcare.</span>
+            </h1>
 
-          <motion.p
-            variants={itemVariants}
-            className="max-w-2xl text-lg md:text-xl text-slate-500 mx-auto mb-12 leading-relaxed font-medium"
-          >
-            Curexal is the unified operating system for healthcare. Connecting
-            patients, doctors, and labs in one intelligent ecosystem.
-          </motion.p>
+            <p className="max-w-2xl text-lg text-slate-600 mx-auto mb-10 leading-relaxed">
+              Curexal connects patients, providers, and facilities in a single, secure environment. Experience seamless consultations, integrated records, and end-to-end clinical workflows.
+            </p>
 
-          <motion.div
-            variants={itemVariants}
-            className="flex flex-col sm:flex-row justify-center gap-4"
-          >
-            {user ? (
-              <Link
-                to="/dashboard"
-                className="h-14 px-8 bg-slate-900 text-white font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-2xl active:scale-95"
-              >
-                <LayoutDashboard size={20} />
-                Manage Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  to="/register"
-                  className="h-14 px-10 bg-primary-600 text-white font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-primary-500 transition-all shadow-xl shadow-primary-600/20 active:scale-95"
-                >
-                  Start Your Journey
-                  <ArrowRight size={20} />
+            <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
+              {user ? (
+                <Link to="/dashboard">
+                  <Button variant="primary" size="lg" className="h-14 px-8 shadow-lg shadow-primary-500/20">
+                    Go to Dashboard
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
                 </Link>
-                <Link
-                  to="/about"
-                  className="h-14 px-10 bg-white border border-slate-200 text-slate-600 font-bold rounded-2xl flex items-center justify-center hover:bg-slate-50 transition-all active:scale-95"
-                >
-                  Learn More
-                </Link>
-              </>
-            )}
+              ) : (
+                <>
+                  <Link to="/register">
+                    <Button variant="primary" size="lg" className="h-14 px-8 shadow-lg shadow-primary-500/20">
+                      Get Started Today
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                  <Link to="/about">
+                    <Button variant="secondary" size="lg" className="h-14 px-8 bg-white border shadow-sm">
+                      How It Works
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-slate-50 border-y border-slate-100">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
+      {/* Trust Metrics Section */}
+      <section className="py-16 bg-white border-y border-slate-100">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 divide-x divide-slate-100">
             {[
-              { label: "Active Patents", value: "250K+" },
-              { label: "Specialist Doctors", value: "5.4K" },
-              { label: "Partner Labs", value: "890" },
-              { label: "Reliability", value: "99.9%" },
-            ].map((stat) => (
+              { label: "Providers Network", value: "2,500+" },
+              { label: "Secure Sessions", value: "1M+" },
+              { label: "Partner Facilities", value: "150+" },
+              { label: "HIPAA Compliant", value: "100%" },
+            ].map((stat, i) => (
               <motion.div
                 key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-center"
+                transition={{ delay: i * 0.1 }}
+                className={i !== 0 ? "pl-8 md:pl-12" : ""}
               >
-                <div className="text-4xl md:text-5xl font-black text-slate-900 mb-2 font-mono tracking-tighter">
+                <div className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-1">
                   {stat.value}
                 </div>
-                <div className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none">
+                <div className="text-sm font-medium text-slate-500">
                   {stat.label}
                 </div>
               </motion.div>
@@ -142,59 +107,66 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 lg:py-40 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col lg:flex-row items-end justify-between mb-20 gap-8">
-            <div className="max-w-xl text-center lg:text-left">
-              <h2 className="text-primary-600 font-black text-xs uppercase tracking-[0.3em] mb-4 flex items-center justify-center lg:justify-start gap-2">
-                <span className="w-8 h-px bg-primary-600/30" />
-                The Protocol
-              </h2>
-              <p className="text-4xl lg:text-6xl font-black text-slate-900 leading-tight tracking-tight">
-                Designed for the <br />
-                modern provider.
-              </p>
-            </div>
-            <p className="max-w-md text-slate-500 text-lg leading-relaxed text-center lg:text-left">
-              Our platform streamlines every clinical touchpoint, from
-              scheduling to pharmacy routing, using high-compliance AI.
-            </p>
+      {/* Features Grid */}
+      <section id="features" className="py-24 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="max-w-3xl mb-16">
+            <h2 className="text-sm font-bold text-primary-600 uppercase tracking-widest mb-3">
+              Platform Features
+            </h2>
+            <h3 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight leading-snug">
+              Everything you need to deliver and receive extraordinary care.
+            </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
-                icon: <Stethoscope className="text-primary-600" />,
-                title: "Unified Telehealth",
-                desc: "Secure, high-fidelity video consultations with integrated patient history and charting.",
+                icon: <MessageSquare className="h-6 w-6 text-primary-600" />,
+                title: "Live Consultations",
+                desc: "Secure, persistent chat and video sessions that meet compliance standards.",
               },
               {
-                icon: <ShieldCheck className="text-indigo-600" />,
-                title: "End-to-End Safety",
-                desc: "Bank-grade encryption for all medical records and pharmacy transmissions.",
+                icon: <ShieldCheck className="h-6 w-6 text-slate-700" />,
+                title: "Role-Based Access",
+                desc: "Strict permissions ensuring data is only accessible to authorized clinical staff.",
               },
               {
-                icon: <HeartPulse className="text-rose-500" />,
-                title: "Smart Monitoring",
-                desc: "Real-time vitals tracking and AI-driven alerts for immediate intervention.",
+                icon: <Activity className="h-6 w-6 text-emerald-600" />,
+                title: "Vitals Tracking",
+                desc: "Real-time monitoring and logging of essential patient health metrics.",
+              },
+              {
+                icon: <Calendar className="h-6 w-6 text-indigo-600" />,
+                title: "Intelligent Scheduling",
+                desc: "Frictionless booking flows for patients, eliminating administrative overhead.",
+              },
+              {
+                icon: <FileText className="h-6 w-6 text-amber-600" />,
+                title: "Digital Prescriptions",
+                desc: "Direct routing of orders to partner pharmacies for seamless fulfillment.",
+              },
+              {
+                icon: <Stethoscope className="h-6 w-6 text-rose-600" />,
+                title: "Emergency SOS",
+                desc: "One-tap emergency triggers alerting dedicated care agents in the field.",
               },
             ].map((feature, i) => (
               <motion.div
                 key={feature.title}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className="group p-8 rounded-[2rem] bg-slate-50 border border-slate-100 hover:bg-white hover:border-primary-100 hover:shadow-2xl transition-all duration-500"
+                className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200 transition-all"
               >
-                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:bg-primary-50 transition-all duration-500">
+                <div className="h-12 w-12 rounded-xl bg-slate-50 flex items-center justify-center mb-6">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-4">
+                <h4 className="text-lg font-bold text-slate-900 mb-2">
                   {feature.title}
-                </h3>
-                <p className="text-slate-500 leading-relaxed font-medium">
+                </h4>
+                <p className="text-slate-600 text-sm leading-relaxed">
                   {feature.desc}
                 </p>
               </motion.div>
@@ -204,34 +176,24 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-20 bg-slate-900">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-12">
-            <div className="flex items-center gap-4">
-              <img
-                src={logoUrl}
-                className="h-10 w-10 rounded-xl contrast-125"
-                alt="Curexal"
-              />
-              <span className="text-2xl font-black text-white tracking-tighter">
-                CUREXAL
-              </span>
+      <footer className="py-12 bg-white border-t border-slate-200">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-3">
+               <img src={logoUrl} className="h-6 w-6 object-contain rounded-md" alt="Curexal" />
+               <span className="text-lg font-bold text-slate-900 tracking-tight">
+                 curexal
+               </span>
             </div>
 
-            <div className="flex gap-8 text-slate-400 text-sm font-bold uppercase tracking-widest">
-              <a href="#" className="hover:text-primary-400 transition-colors">
-                Privacy
-              </a>
-              <a href="#" className="hover:text-primary-400 transition-colors">
-                Terms
-              </a>
-              <a href="#" className="hover:text-primary-400 transition-colors">
-                API
-              </a>
+            <div className="flex gap-6 text-sm font-medium text-slate-500">
+              <a href="#" className="hover:text-primary-600 transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-primary-600 transition-colors">Terms of Service</a>
+              <a href="#" className="hover:text-primary-600 transition-colors">Support</a>
             </div>
 
-            <p className="text-slate-500 text-xs font-bold">
-              &copy; {new Date().getFullYear()} CUREXAL LABS.
+            <p className="text-sm text-slate-400">
+              &copy; {new Date().getFullYear()} Curexal Systems. All rights reserved.
             </p>
           </div>
         </div>

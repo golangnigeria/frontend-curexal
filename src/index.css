@@ -26,93 +26,115 @@
   --color-accent-950: var(--accent-950);
 }
 
-/* Enforced Dark Blue Theme */
-/* Modern Indigo & Slate Theme */
+/* curexal Brand Theme (Teal & Midnight Blue) */
 :root {
-  /* Indigo Primary Palette */
-  --primary-50: #eef2ff;
-  --primary-100: #e0e7ff;
-  --primary-200: #c7d2fe;
-  --primary-300: #a5b4fc;
-  --primary-400: #818cf8;
-  --primary-500: #6366f1;
-  --primary-600: #4f46e5;
-  --primary-700: #4338ca;
-  --primary-800: #3730a3;
-  --primary-900: #312e81;
-  --primary-950: #1e1b4b;
+  /* curexal Primary Palette (Teal) */
+  --primary-50: #f0f9f4;
+  --primary-100: #dcf1e3;
+  --primary-200: #bee4cc;
+  --primary-300: #91d1ad;
+  --primary-400: #72c9a1; /* Core curexal Teal */
+  --primary-500: #42ad7d;
+  --primary-600: #338d68;
+  --primary-700: #2b7056;
+  --primary-800: #255a47;
+  --primary-900: #204a3c;
+  --primary-950: #112a23;
 
-  /* Slate/Gray Accent Palette */
-  --accent-50: #f8fafc;
-  --accent-100: #f1f5f9;
-  --accent-200: #e2e8f0;
-  --accent-300: #cbd5e1;
-  --accent-400: #94a3b8;
-  --accent-500: #64748b;
-  --accent-600: #475569;
-  --accent-700: #334155;
-  --accent-800: #1e293b;
-  --accent-900: #0f172a;
-  --accent-950: #020617;
+  /* curexal Midnight Blue (Depth & Authority) */
+  --accent-50: #f1f4f9;
+  --accent-100: #e2e8f1;
+  --accent-200: #c9d5e6;
+  --accent-300: #a1bad4;
+  --accent-400: #7297bd;
+  --accent-500: #01223a; /* Core curexal Midnight */
+  --accent-600: #011d32;
+  --accent-700: #01182a;
+  --accent-800: #01121f;
+  --accent-900: #010d16;
+  --accent-950: #00060b;
 
-  --background: #fdfdfd;
-  --foreground: #020617;
+  --background: #f8fafc;
+  --foreground: #01223a;
   --surface: #ffffff;
-  --border: #f1f5f9;
+  --border: #e2e8f1;
 }
 
-/* Ensure even without .dark class the app stays dark */
+/* curexal Core Styling */
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  transition: none; /* Instant for "locked" theme feel */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
 }
 
-/* Compact Scrollbars for mobile-first feel */
+/* Global Typography - Trusted & Clear */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  color: var(--accent-500);
+}
+
+/* Clean, crisp scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--background);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--primary-200);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-800);
+  background: var(--primary-400);
 }
 
-/* AI Health Mesh Gradient Animation */
-@keyframes meshGradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* curexal Card Base */
+.curexal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px; 
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.bg-ai-mesh {
-  background-color: var(--background);
-  background-image: 
-    radial-gradient(at 0% 0%, hsla(210, 100%, 85%, 0.4) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, hsla(220, 100%, 80%, 0.4) 0, transparent 50%), 
-    radial-gradient(at 100% 0%, hsla(190, 100%, 82%, 0.4) 0, transparent 50%), 
-    radial-gradient(at 50% 50%, hsla(215, 100%, 85%, 0.3) 0, transparent 50%), 
-    radial-gradient(at 0% 100%, hsla(200, 100%, 81%, 0.4) 0, transparent 50%), 
-    radial-gradient(at 50% 100%, hsla(210, 100%, 84%, 0.4) 0, transparent 50%), 
-    radial-gradient(at 100% 100%, hsla(225, 100%, 92%, 0.4) 0, transparent 50%);
-  background-size: 200% 200%;
-  animation: meshGradient 20s ease infinite alternate;
-  position: relative;
-  overflow: hidden;
+.curexal-card:hover {
+  border-color: var(--primary-400);
+  box-shadow: 0 10px 20px -5px rgba(1, 34, 58, 0.05);
+  transform: translateY(-2px);
 }
 
-.bg-ai-mesh::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.03;
-  pointer-events: none;
+/* Brand Button Override */
+.btn-curexal {
+  background: var(--primary-400);
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  padding: 0.875rem 1.75rem;
+  border-radius: 10px;
+  transition: all 200ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-curexal:hover {
+  background: var(--primary-500);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(66, 173, 125, 0.2);
+}
+
+.bg-curexal-gradient {
+  background: linear-gradient(135deg, var(--accent-500) 0%, var(--accent-800) 100%);
+}
+
+.bg-curexal-teal-gradient {
+  background: linear-gradient(135deg, var(--primary-400) 0%, var(--primary-600) 100%);
 }

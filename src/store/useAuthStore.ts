@@ -5,8 +5,10 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: number;
-  role_name?: string;
+  role: string;      // UUID as string
+  role_name: string; // Now required for routing logic
+  avatar_url?: string;
+  is_verified?: boolean;
 }
 
 interface AuthState {
@@ -18,6 +20,7 @@ interface AuthState {
 
   setAuth: (user: User, token: string, requiresOnboarding?: boolean) => void;
   setToken: (token: string) => void;
+  updateUser: (user: Partial<User>) => void; // 👈 ADD
   logout: () => void;
   setHasHydrated: (state: boolean) => void; // 👈 ADD
 }
@@ -40,14 +43,20 @@ export const useAuthStore = create<AuthState>()(
         }),
 
       setToken: (token) => set({ token, isAuthenticated: !!token }),
+      updateUser: (newUser: Partial<User>) => 
+        set((state) => ({
+          user: state.user ? { ...state.user, ...newUser } : null,
+        })),
 
-      logout: () =>
+      logout: () => {
+        sessionStorage.removeItem("doctor_status");
         set({
           user: null,
           token: null,
           isAuthenticated: false,
           requiresOnboarding: false,
-        }),
+        });
+      },
 
       setHasHydrated: (state) => set({ hasHydrated: state }),
     }),
@@ -57,6 +66,7 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated,
+        requiresOnboarding: state.requiresOnboarding,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true); // 👈 MARK HYDRATED

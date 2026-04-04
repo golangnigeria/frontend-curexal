@@ -1,184 +1,273 @@
-import { Users, Calendar, Activity, CheckCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Users, MessageSquare, Activity, CheckCircle, Power, Eye, EyeOff, Loader2, User as UserIcon, ChevronRight } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
+import api from "../../lib/api";
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import { useDoctorAvailability, type DoctorAvailability } from "../../hooks/useDoctorAvailability";
+import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/Card";
+import { Button } from "../../components/ui/Button";
+import { Badge } from "../../components/ui/Badge";
+
+interface PatientProfile {
+  registration_number?: string;
+  gender?: string;
+  phone_number?: string;
+  date_of_birth?: string;
+}
+
+interface Match {
+  id: string;
+  status: string;
+  matched_at: string;
+  patient?: { 
+    name: string;
+    patient_profile?: PatientProfile;
+  };
+}
 
 const DoctorDashboard = () => {
   const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
+
+  const [initialApiStatus, setInitialApiStatus] = useState<DoctorAvailability | undefined>();
+  const { status, setStatus } = useDoctorAvailability(initialApiStatus);
+  
+  const [counts, setCounts] = useState({
+    activeChats: 0,
+    totalPatients: 0,
+    pendingResults: 0,
+    completedToday: 0,
+  });
+  
+  const [activeMatches, setActiveMatches] = useState<Match[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDoctorData = async () => {
+      try {
+        const [profileRes, historyRes] = await Promise.all([
+          api.get("/profile/me"),
+          api.get("/chats/history"),
+        ]);
+
+        const profile = profileRes.data.doctor_profile;
+        if (profile) {
+          setInitialApiStatus({
+            isOnline: profile.is_online,
+            isVisible: profile.is_visible_for_matching,
+          });
+        }
+
+        const matches = historyRes.data.matches || [];
+        const active = matches.filter((m: Match) => m.status === 'active');
+        setActiveMatches(active);
+        
+        setCounts({
+          activeChats: active.length,
+          totalPatients: 142,
+          pendingResults: 3,
+          completedToday: matches.filter((m: Match) => m.status === 'closed' && format(new Date(m.matched_at), 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')).length,
+        });
+      } catch (err) {
+        console.error("Failed to fetch doctor dashboard data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctorData();
+  }, []);
+
+  const handleToggleOnline = () => {
+    setStatus({
+      isOnline: !status.isOnline,
+      isVisible: status.isVisible, // Maintain visibility setting
+    });
+    toast.success(`You are now ${!status.isOnline ? 'Online' : 'Offline'}`);
+  };
+
+  const handleToggleVisibility = () => {
+    setStatus({
+      isOnline: status.isOnline,
+      isVisible: !status.isVisible,
+    });
+    toast.success(`Priority matching ${!status.isVisible ? 'enabled' : 'disabled'}`);
+  };
+
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <Loader2 className="h-8 w-8 text-primary-500 animate-spin mb-4" />
+      <p className="text-sm text-slate-500">Loading workspace...</p>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
-      {/* Quick Actions & Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-800">
-            Welcome back, Dr.{" "}
-            {user?.name?.split(" ")[1] || user?.name || "Doctor"}
-          </h2>
-          <p className="text-slate-500 mt-1">
-            Here's your schedule and patient overview for today.
-          </p>
-        </div>
-        <div className="flex gap-3 text-sm">
-          <div className="bg-green-50 text-green-700 border border-green-200 px-4 py-2 rounded-lg font-medium flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-            </span>
-            Available for Telemedicine
+      {/* Header Profile & Controls */}
+      <Card className="border-none shadow-none bg-transparent">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-2">
+          <div>
+            <h2 className="text-3xl font-bold text-slate-900 tracking-tight leading-none mb-3">
+              Dr. {user?.name?.split(" ")[1] || user?.name || "Doctor"}
+            </h2>
+            <div className="flex items-center gap-2">
+               <span className={`h-2.5 w-2.5 rounded-full ${status.isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
+               <p className="text-sm font-medium text-slate-600">
+                 System Status: {status.isOnline ? 'Receiving Patients' : 'Offline'}
+               </p>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap gap-3 w-full md:w-auto">
+            <Button 
+              variant={status.isOnline ? "primary" : "outline"}
+              onClick={handleToggleOnline}
+              className={`flex-1 md:flex-none ${status.isOnline ? 'bg-emerald-600 hover:bg-emerald-700' : ''}`}
+            >
+              <Power className="mr-2 h-4 w-4" />
+              {status.isOnline ? 'Go Offline' : 'Go Online'}
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={handleToggleVisibility}
+              className="flex-1 md:flex-none"
+            >
+              {status.isVisible ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4 text-slate-400" />}
+              {status.isVisible ? 'Visible' : 'Hidden'}
+            </Button>
           </div>
         </div>
+      </Card>
+
+      {/* Metrics */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: "Active Consultations", value: counts.activeChats, icon: MessageSquare },
+          { label: "Total Patients", value: counts.totalPatients, icon: Users },
+          { label: "Pending Lab Results", value: counts.pendingResults, icon: Activity },
+          { label: "Completed Today", value: counts.completedToday, icon: CheckCircle },
+        ].map((stat, i) => (
+          <Card key={i} className="hover:border-slate-300 transition-colors cursor-pointer shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</p>
+                <stat.icon className="h-5 w-5 text-slate-400" />
+              </div>
+              <h3 className="text-3xl font-bold text-slate-900">{stat.value}</h3>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-primary-500 transition-colors group">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-primary-50 dark:bg-primary-900/40 rounded-xl text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform">
-              <Calendar size={24} />
-            </div>
-          </div>
-          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
-            8
-          </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
-            Today's Appointments
-          </p>
-        </div>
-
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-accent-500 transition-colors group">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-accent-50 rounded-xl text-accent-600 group-hover:scale-110 transition-transform">
-              <Users size={24} />
-            </div>
-          </div>
-          <h3 className="text-3xl font-bold text-slate-800">142</h3>
-          <p className="text-sm text-slate-500 font-medium mt-1">
-            Total Patients
-          </p>
-        </div>
-
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-amber-500 transition-colors group">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-amber-50 rounded-xl text-amber-600 group-hover:scale-110 transition-transform">
-              <Activity size={24} />
-            </div>
-          </div>
-          <h3 className="text-3xl font-bold text-slate-800">3</h3>
-          <p className="text-sm text-slate-500 font-medium mt-1">
-            Pending Lab Results
-          </p>
-        </div>
-
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-green-500 transition-colors group">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-green-50 rounded-xl text-green-600 group-hover:scale-110 transition-transform">
-              <CheckCircle size={24} />
-            </div>
-          </div>
-          <h3 className="text-3xl font-bold text-slate-800">4</h3>
-          <p className="text-sm text-slate-500 font-medium mt-1">
-            Completed Today
-          </p>
-        </div>
-      </div>
-
-      {/* Main Content Split */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Schedule */}
+        {/* Left Column - Active Queue */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-bold text-slate-800">
-                Upcoming Schedule
-              </h3>
-              <button className="text-primary-600 text-sm font-medium hover:underline">
-                View Calendar
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {/* Mock Appointment Item */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl border-l-4 border-blue-500 bg-blue-50/50 hover:bg-slate-50 transition-colors group">
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col text-center min-w-12">
-                    <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                      10:30
-                    </span>
-                    <span className="text-xs text-slate-500">AM</span>
+          <Card className="h-full border-slate-200">
+            <CardHeader className="flex flex-row justify-between items-center pb-2">
+              <CardTitle className="text-lg font-bold">Patient Queue</CardTitle>
+              <Link to="/dashboard/consultations">
+                 <Button variant="ghost" size="sm" className="text-primary-600">History</Button>
+              </Link>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-slate-100">
+                {activeMatches.length > 0 ? activeMatches.map((match) => (
+                  <div key={match.id} className="flex flex-col sm:flex-row items-center justify-between p-6 hover:bg-slate-50 transition-colors">
+                    <div className="flex items-center gap-5 w-full mb-4 sm:mb-0">
+                      <div className="h-12 w-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 shrink-0 border border-slate-200">
+                        <UserIcon className="h-6 w-6" />
+                      </div>
+                      <div>
+                        <h4 className="text-base font-bold text-slate-900 mb-0.5 flex flex-wrap items-center gap-2">
+                          {match.patient?.name || "Secure Patient"}
+                          {match.patient?.patient_profile?.registration_number && (
+                            <span className="text-xs font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                              {match.patient.patient_profile.registration_number}
+                            </span>
+                          )}
+                        </h4>
+                        
+                        {match.patient?.patient_profile && (
+                           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-600 mb-2">
+                              {match.patient.patient_profile.gender && (
+                                 <span className="capitalize font-medium">{match.patient.patient_profile.gender}</span>
+                              )}
+                              {match.patient.patient_profile.date_of_birth && (
+                                 <span className="font-medium">
+                                    {Math.floor((new Date().getTime() - new Date(match.patient.patient_profile.date_of_birth).getTime()) / 31557600000)} yrs
+                                 </span>
+                              )}
+                              {match.patient.patient_profile.phone_number && (
+                                 <span>{match.patient.patient_profile.phone_number}</span>
+                              )}
+                           </div>
+                        )}
+                        
+                        <div className="flex items-center gap-2">
+                           <Badge variant="success" className="px-2 py-0">Waiting</Badge>
+                           <p className="text-xs font-medium text-slate-500">
+                             Matched at {format(new Date(match.matched_at), "h:mm a")}
+                           </p>
+                        </div>
+                      </div>
+                    </div>
+                    <Button 
+                      onClick={() => navigate(`/dashboard/chats/${match.id}`)}
+                      variant="primary"
+                      className="w-full sm:w-auto shrink-0 shadow-sm"
+                    >
+                      Enter Session
+                      <ChevronRight className="ml-1 h-4 w-4" />
+                    </Button>
                   </div>
-                  <div className="h-10 w-px bg-slate-200 hidden sm:block"></div>
-                  <div>
-                    <h4 className="font-semibold text-slate-800">
-                      Michael Johnson
-                    </h4>
-                    <p className="text-sm text-slate-500">
-                      Regular Checkup • Physical
-                    </p>
+                )) : (
+                  <div className="text-center py-16 px-6">
+                     <div className="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
+                        <MessageSquare className="h-8 w-8 text-slate-300" />
+                     </div>
+                     <h3 className="text-sm font-semibold text-slate-900 mb-1">Queue Empty</h3>
+                     <p className="text-sm text-slate-500 max-w-sm mx-auto">
+                       There are no active patient matches waiting. Keep your status online to receive new consultations.
+                     </p>
                   </div>
-                </div>
-                <div className="mt-3 sm:mt-0 flex gap-2 w-full sm:w-auto">
-                  <button className="flex-1 sm:flex-none px-4 py-1.5 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:text-primary-600 hover:border-primary-500 transition-colors">
-                    View File
-                  </button>
-                  <button className="flex-1 sm:flex-none px-4 py-1.5 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors">
-                    Start Visit
-                  </button>
-                </div>
+                )}
               </div>
-
-              {/* Mock Appointment Item */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl border-l-4 border-slate-200 bg-white hover:bg-slate-50 transition-colors group">
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col text-center min-w-12">
-                    <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                      11:15
-                    </span>
-                    <span className="text-xs text-slate-500">AM</span>
-                  </div>
-                  <div className="h-10 w-px bg-slate-200 hidden sm:block"></div>
-                  <div>
-                    <h4 className="font-semibold text-slate-800">
-                      Sarah Williams
-                    </h4>
-                    <p className="text-sm text-slate-500 flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>{" "}
-                      Virtual Consultation
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Right Column */}
+        {/* Right Column - Alerts & Activity */}
         <div className="space-y-6">
-          {/* Recent Lab Results */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-bold text-slate-800">
-                New Lab Results
-              </h3>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-start gap-3 p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer group">
-                <div className="p-2 bg-amber-50 text-amber-600 rounded-lg shrink-0">
-                  <Activity size={16} />
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg font-bold">Clinical Alerts</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 px-4 pb-6">
+              <div className="p-4 rounded-xl border border-slate-100 hover:bg-slate-50/50 transition-colors cursor-pointer group">
+                <div className="flex justify-between items-start mb-2">
+                   <Badge variant="danger">High Priority</Badge>
+                   <p className="text-xs text-slate-400 mt-0.5">10m ago</p>
                 </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-slate-800 group-hover:text-primary-600 transition-colors">
-                    Comprehensive Metabolic
-                  </h4>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    Patient: David Clark
-                  </p>
-                  <span className="inline-block mt-1 px-2 py-0.5 text-[10px] uppercase font-bold text-red-700 bg-red-100 rounded">
-                    Attention Required
-                  </span>
-                </div>
+                <h4 className="text-sm font-semibold text-slate-900 mb-0.5">Metabolic Panel Results</h4>
+                <p className="text-xs text-slate-500">Patient: David Clark</p>
               </div>
-            </div>
-          </div>
+
+              <div className="p-4 rounded-xl border border-slate-100 hover:bg-slate-50/50 transition-colors cursor-pointer group">
+                <div className="flex justify-between items-start mb-2">
+                   <Badge variant="secondary">Standard</Badge>
+                   <p className="text-xs text-slate-400 mt-0.5">1h ago</p>
+                </div>
+                <h4 className="text-sm font-semibold text-slate-900 mb-0.5">Follow-up Reminder</h4>
+                <p className="text-xs text-slate-500">Patient: Sarah Jenkins</p>
+              </div>
+              
+              <Button variant="ghost" className="w-full text-xs font-semibold text-slate-600 mt-2">
+                 View All Alerts
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

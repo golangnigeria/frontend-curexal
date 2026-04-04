@@ -42,15 +42,15 @@ const Navbar = () => {
         )}
       >
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="relative h-8 w-8 sm:h-10 sm:w-10 overflow-hidden rounded-xl border border-slate-100 shadow-sm transition-all group-hover:scale-110">
+          <div className="relative h-8 w-8 sm:h-10 sm:w-10 overflow-hidden rounded-xl border border-slate-100 shadow-sm transition-all group-hover:scale-110 bg-white flex items-center justify-center">
             <img
               src={logoUrl}
-              alt="Logo"
-              className="h-full w-full object-cover"
+              alt="curexal"
+              className="h-6 w-6 sm:h-7 sm:w-7 object-contain"
             />
           </div>
-          <span className="text-xl font-bold tracking-tighter text-slate-900">
-            CURE<span className="text-primary-600 font-black">XAL</span>
+          <span className="text-xl sm:text-2xl font-extrabold tracking-tighter text-accent-500 lowercase">
+            curexal
           </span>
         </Link>
 
@@ -62,10 +62,10 @@ const Navbar = () => {
               to={link.path}
               className={({ isActive }) =>
                 cn(
-                  "px-4 py-1.5 text-xs font-semibold rounded-lg transition-all",
+                  "px-4 py-1.5 text-xs font-bold rounded-lg transition-all",
                   isActive
-                    ? "bg-white text-primary-600 shadow-sm"
-                    : "text-slate-500 hover:text-slate-900 hover:bg-white/50",
+                    ? "bg-white text-primary-400 shadow-sm"
+                    : "text-accent-400 hover:text-accent-500 hover:bg-white/50",
                 )
               }
             >
@@ -79,7 +79,7 @@ const Navbar = () => {
           {user ? (
             <Link
               to="/dashboard"
-              className="h-10 px-5 bg-slate-900 text-white text-xs font-bold rounded-xl flex items-center gap-2 hover:bg-slate-800 transition-all shadow-lg active:scale-95"
+              className="h-10 px-5 bg-accent-500 text-white text-xs font-bold rounded-xl flex items-center gap-2 hover:bg-accent-600 transition-all shadow-lg active:scale-95"
             >
               <LayoutDashboard size={14} />
               Dashboard
@@ -88,13 +88,13 @@ const Navbar = () => {
             <>
               <Link
                 to="/login"
-                className="text-xs font-bold text-slate-600 hover:text-slate-900 px-4"
+                className="text-xs font-bold text-accent-400 hover:text-accent-500 px-4"
               >
                 Sign In
               </Link>
               <Link
                 to="/register"
-                className="h-10 px-5 bg-primary-600 text-white text-xs font-bold rounded-xl flex items-center gap-2 hover:bg-primary-500 transition-all shadow-lg shadow-primary-600/20 active:scale-95"
+                className="h-10 px-5 bg-primary-400 text-white text-xs font-bold rounded-xl flex items-center gap-2 hover:bg-primary-500 transition-all shadow-lg shadow-primary-400/20 active:scale-95"
               >
                 Get Started
                 <ArrowRight size={14} />

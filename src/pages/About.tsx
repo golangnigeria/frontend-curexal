@@ -43,7 +43,7 @@ const About = () => {
     {
       title: "Universal Trust",
       description:
-        "Security and data integrity are the foundations of the Curexal ecosystem.",
+        "Security and data integrity are the foundations of the curexal ecosystem.",
       icon: <ShieldCheck className="text-emerald-600" size={24} />,
     },
   ];
@@ -90,16 +90,16 @@ const About = () => {
           </motion.div>
           <motion.h1
             variants={itemVariants}
-            className="text-5xl md:text-8xl font-black tracking-tight text-slate-900 mb-8 leading-[0.9]"
+            className="text-5xl md:text-8xl font-extrabold tracking-tight text-accent-500 mb-8 leading-[0.9] lowercase"
           >
             Building the <br />
-            <span className="text-primary-600 uppercase">Health OS.</span>
+            <span className="text-primary-400">Health OS.</span>
           </motion.h1>
           <motion.p
             variants={itemVariants}
-            className="max-w-2xl mx-auto text-lg md:text-xl text-slate-500 font-medium leading-relaxed"
+            className="max-w-2xl mx-auto text-lg md:text-xl text-accent-400 font-semibold italic leading-relaxed"
           >
-            Curexal was founded with a single mission: to bridge the gap between
+            curexal was founded with a single mission: to bridge the gap between
             complex medical bureaucracy and high-quality, human-centric care.
           </motion.p>
         </motion.div>
@@ -138,15 +138,15 @@ const About = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col lg:flex-row gap-20 items-center">
             <div className="flex-1">
-              <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-8">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-accent-500 tracking-tight mb-8 lowercase">
                 Our legacy of <br />
-                <span className="text-primary-600">innovation.</span>
+                <span className="text-primary-400">innovation.</span>
               </h2>
               <div className="space-y-8">
                 {[
                   {
                     year: "2023",
-                    title: "Curexal Inception",
+                    title: "curexal Inception",
                     desc: "Founded with the vision to unify global healthcare.",
                   },
                   {
@@ -168,7 +168,7 @@ const About = () => {
                       )}
                     </div>
                     <div>
-                      <span className="text-xs font-black text-primary-600 mb-1 block tracking-widest">
+                      <span className="text-xs font-bold text-primary-400 mb-1 block tracking-widest">
                         {item.year}
                       </span>
                       <h4 className="text-lg font-bold text-slate-900 mb-2">
@@ -195,9 +195,9 @@ const About = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-24 bg-slate-900 text-white rounded-[60px] m-4 sm:m-8 overflow-hidden">
+      <section className="py-24 bg-accent-500 text-white rounded-[60px] m-4 sm:m-8 overflow-hidden shadow-2xl">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-5xl font-black mb-20 tracking-tight">
+          <h2 className="text-3xl md:text-5xl font-extrabold mb-20 tracking-tight lowercase">
             The visionary <br />
             <span className="text-primary-400">Leadership Team.</span>
           </h2>

@@ -104,16 +104,16 @@ const Features = () => {
           </motion.div>
           <motion.h1
             variants={itemVariants}
-            className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 mb-8 leading-tight"
+            className="text-5xl md:text-7xl font-extrabold tracking-tight text-accent-500 mb-8 leading-tight lowercase"
           >
             Capabilities that <br />
-            <span className="text-primary-600 uppercase">Power Care</span>
+            <span className="text-primary-400">Power Care</span>
           </motion.h1>
           <motion.p
             variants={itemVariants}
-            className="max-w-2xl text-lg text-slate-500 mx-auto leading-relaxed font-medium"
+            className="max-w-2xl text-lg text-accent-400 mx-auto leading-relaxed font-semibold italic"
           >
-            Curexal is more than just a platform; it's a comprehensive operating
+            curexal is more than just a platform; it's a comprehensive operating
             system designed to streamline every facet of the medical journey.
           </motion.p>
         </motion.div>
@@ -156,10 +156,10 @@ const Features = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-slate-900 text-white rounded-[40px] m-4 sm:m-8 overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-primary-600/20 blur-[120px] -z-10" />
+      <section className="py-20 bg-accent-500 text-white rounded-[40px] m-4 sm:m-8 overflow-hidden relative shadow-2xl">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-primary-400/10 blur-[120px] -z-10" />
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-5xl font-black mb-8 leading-tight tracking-tight">
+          <h2 className="text-3xl md:text-5xl font-extrabold mb-8 leading-tight tracking-tight lowercase">
             Ready to experience the <br />
             <span className="text-primary-400">new standard</span> in care?
           </h2>
@@ -167,7 +167,7 @@ const Features = () => {
             {user ? (
               <Link
                 to="/dashboard"
-                className="h-14 px-10 bg-white text-slate-900 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-slate-50 transition-all active:scale-95 shadow-xl"
+                className="h-14 px-10 bg-white text-accent-500 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-slate-50 transition-all active:scale-95 shadow-xl"
               >
                 Go to Dashboard
                 <ArrowRight size={18} />
@@ -176,13 +176,13 @@ const Features = () => {
               <>
                 <Link
                   to="/register"
-                  className="h-14 px-10 bg-white text-slate-900 font-bold rounded-2xl flex items-center justify-center hover:bg-slate-50 transition-all active:scale-95 shadow-xl"
+                  className="h-14 px-10 bg-primary-400 text-white font-bold rounded-2xl flex items-center justify-center hover:bg-primary-500 transition-all active:scale-95 shadow-xl"
                 >
                   Get Started Now
                 </Link>
                 <Link
                   to="/login"
-                  className="h-14 px-10 bg-slate-800 text-white font-bold rounded-2xl flex items-center justify-center border border-white/10 hover:bg-slate-700 transition-all active:scale-95"
+                  className="h-14 px-10 bg-white/10 text-white font-bold rounded-2xl flex items-center justify-center border border-white/10 hover:bg-white/20 transition-all active:scale-95"
                 >
                   Sign In
                 </Link>
@@ -192,8 +192,8 @@ const Features = () => {
         </div>
       </section>
 
-      <footer className="py-20 text-center text-slate-400 text-xs font-bold uppercase tracking-[0.2em]">
-        © {new Date().getFullYear()} Curexal Corporation. All rights reserved.
+      <footer className="py-20 text-center text-accent-300 text-xs font-bold uppercase tracking-[0.2em]">
+        © {new Date().getFullYear()} curexal GLOBAL. All rights reserved.
       </footer>
     </div>
   );

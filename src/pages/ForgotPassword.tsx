@@ -44,11 +44,13 @@ const ForgotPassword = () => {
           className="flex justify-center flex-col items-center cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <img
-            src={logoUrl}
-            alt="Curexal Logo"
-            className="h-16 w-16 rounded-xl object-cover shadow-sm border border-slate-100"
-          />
+          <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-accent-100">
+            <img
+              src={logoUrl}
+              alt="curexal"
+              className="h-10 w-10 object-contain"
+            />
+          </div>
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900">
           Reset Password
@@ -70,9 +72,9 @@ const ForgotPassword = () => {
             )}
 
             {successMsg && (
-              <div className="bg-primary-50 border-l-4 border-primary-400 p-4 rounded-md flex items-start">
-                <Shield className="h-5 w-5 text-primary-600 mr-2 shrink-0 mt-0.5" />
-                <p className="text-sm text-primary-800">{successMsg}</p>
+              <div className="bg-primary-50 border-l-4 border-primary-400 p-4 rounded-xl flex items-start">
+                <Shield className="h-5 w-5 text-primary-500 mr-2 shrink-0 mt-0.5" />
+                <p className="text-sm text-accent-500 font-medium">{successMsg}</p>
               </div>
             )}
 
@@ -105,7 +107,7 @@ const ForgotPassword = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-primary-600 dark:hover:bg-primary-500 transition-colors"
+                className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg shadow-primary-400/20 text-sm font-bold text-white bg-primary-400 hover:bg-primary-500 focus:outline-none transition-all active:scale-[0.98] disabled:opacity-50"
               >
                 {isLoading ? (
                   <span className="flex items-center">
@@ -151,7 +153,7 @@ const ForgotPassword = () => {
                 <button
                   type="button"
                   onClick={() => navigate("/login")}
-                  className="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors"
+                  className="inline-flex items-center text-sm font-bold text-primary-400 hover:text-primary-500 transition-colors"
                 >
                   <ArrowLeft className="mr-1 h-4 w-4" />
                   Back to login

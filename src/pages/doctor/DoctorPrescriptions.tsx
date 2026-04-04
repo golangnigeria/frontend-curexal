@@ -57,11 +57,11 @@ export const DoctorPrescriptions = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">
+          <h2 className="text-2xl font-extrabold text-accent-500 lowercase tracking-tighter">
             Issue Prescription
           </h2>
-          <p className="text-slate-500 mt-1">
-            Digitally route medications directly to Curexal partner pharmacies.
+          <p className="text-accent-400 mt-1 font-medium italic">
+            Digitally route medications directly to curexal partner pharmacies.
           </p>
         </div>
       </div>
@@ -69,18 +69,18 @@ export const DoctorPrescriptions = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Prescription Form Column */}
         <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="bg-primary-50 p-6 border-b border-primary-100">
-            <label className="block text-sm font-semibold text-primary-800 mb-2">
+          <div className="bg-primary-50 p-6 border-b border-primary-200">
+            <label className="block text-sm font-bold text-primary-500 mb-2 uppercase tracking-widest text-[10px]">
               Patient Search
             </label>
             <div className="relative max-w-md">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-primary-400" />
               </div>
               <input
                 type="text"
                 onChange={handlePatientSearch}
-                className="block w-full pl-10 pr-3 py-3 border border-primary-200 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium text-slate-800"
+                className="block w-full pl-12 pr-4 py-4 border-none rounded-2xl bg-white shadow-xl focus:outline-none focus:ring-2 focus:ring-primary-400 font-bold text-accent-500 placeholder:text-accent-200"
                 placeholder="Type Name, Email, or Patient ID..."
               />
             </div>
@@ -182,11 +182,11 @@ export const DoctorPrescriptions = () => {
               </div>
             </div>
 
-            <div className="flex gap-4 pt-4 border-t border-slate-100">
+            <div className="flex gap-4 pt-6 border-t border-slate-100">
               <button
                 type="submit"
                 disabled={isSubmitting || !patientId}
-                className="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary-500/20 active:scale-95"
+                className="flex-1 bg-primary-400 hover:bg-primary-500 text-white font-bold py-4 rounded-xl flex justify-center items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-primary-400/20 active:scale-95"
               >
                 {isSubmitting ? (
                   "Sending..."
@@ -202,15 +202,15 @@ export const DoctorPrescriptions = () => {
 
         {/* Info Column */}
         <div className="space-y-6">
-          <div className="bg-amber-50 rounded-2xl border border-amber-200 p-6 flex flex-col justify-center items-center text-center">
-            <div className="h-14 w-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-4">
-              <ShieldAlert size={28} />
+          <div className="bg-primary-50 rounded-2xl border border-primary-200 p-8 flex flex-col justify-center items-center text-center shadow-sm">
+            <div className="h-16 w-16 bg-white text-primary-400 rounded-2xl flex items-center justify-center mb-6 shadow-xl transform rotate-12">
+              <ShieldAlert size={32} />
             </div>
-            <h3 className="font-bold text-slate-800 mb-2">
+            <h3 className="font-extrabold text-accent-500 mb-2 lowercase tracking-tighter">
               Automated Verification
             </h3>
-            <p className="text-slate-600 text-sm">
-              All prescriptions issued through Curexal automatically undergo an
+            <p className="text-accent-400 text-sm font-medium italic">
+              All prescriptions issued through curexal automatically undergo an
               AI conflict check against the patient's existing medication list
               to prevent adverse interactions.
             </p>

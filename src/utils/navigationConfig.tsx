@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import {
-  Calendar,
   Activity,
   HeartPulse,
   Bell,
@@ -8,8 +7,11 @@ import {
   FileText,
   LayoutDashboard,
   Truck,
+  CheckCircle,
+  FlaskConical,
+  MessageSquare,
+  Search
 } from "lucide-react";
-
 // Define a type for nav items
 export interface NavItem {
   label: string;
@@ -18,9 +20,8 @@ export interface NavItem {
 }
 
 // Map roles to nav items
-// 1 = Admin, 2 = Patient, 3 = Doctor
-export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
-  1: [
+export const NAVIGATION_CONFIG: Record<string, NavItem[]> = {
+  admin: [
     // Admin
     {
       label: "User Management",
@@ -28,17 +29,32 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       icon: <ClipboardList size={20} />,
     },
     {
+      label: "Approvals",
+      path: "/dashboard/admin/approvals",
+      icon: <CheckCircle size={20} />,
+    },
+    {
+      label: "Investigations",
+      path: "/dashboard/admin/investigations",
+      icon: <FlaskConical size={20} />,
+    },
+    {
+      label: "Payouts",
+      path: "/dashboard/admin/payouts",
+      icon: <CheckCircle size={20} />,
+    },
+    {
       label: "Reports",
       path: "/dashboard/reports",
       icon: <FileText size={20} />,
     },
   ],
-  2: [
+  patient: [
     // Patient
     {
-      label: "Appointments",
-      path: "/dashboard/appointments",
-      icon: <Calendar size={20} />,
+      label: "Consultations",
+      path: "/dashboard/consultations",
+      icon: <MessageSquare size={20} />,
     },
     {
       label: "Lab Tests",
@@ -51,17 +67,22 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       icon: <HeartPulse size={20} />,
     },
     {
+      label: "Redeem Code",
+      path: "/dashboard/patient/investigations/redeem",
+      icon: <Search size={20} />,
+    },
+    {
       label: "Reminders",
       path: "/dashboard/reminders",
       icon: <Bell size={20} />,
     },
   ],
-  3: [
+  doctor: [
     // Doctor
     {
-      label: "Appointments",
-      path: "/dashboard/appointments", // or /doctor/appointments if you prefer
-      icon: <Calendar size={20} />,
+      label: "Consultations",
+      path: "/dashboard/consultations",
+      icon: <MessageSquare size={20} />,
     },
     {
       label: "Prescriptions",
@@ -69,12 +90,22 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       icon: <ClipboardList size={20} />,
     },
     {
+      label: "Issue Investigation",
+      path: "/dashboard/doctor/investigations/issue",
+      icon: <FlaskConical size={20} />,
+    },
+    {
       label: "Patient Records",
       path: "/dashboard/patient-records",
       icon: <FileText size={20} />,
     },
+    {
+      label: "My Earnings",
+      path: "/dashboard/profile",
+      icon: <Activity size={20} />,
+    },
   ],
-  4: [
+  pharmacy: [
     // Pharmacy
     {
       label: "Prescription Orders",
@@ -87,7 +118,7 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       icon: <Activity size={20} />,
     },
   ],
-  5: [
+  laboratory: [
     // Laboratory
     {
       label: "Test Requests",
@@ -100,7 +131,7 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       icon: <FileText size={20} />,
     },
   ],
-  6: [
+  logistics: [
     // Logistics
     {
       label: "Deliveries",
@@ -113,7 +144,7 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       icon: <Activity size={20} />,
     },
   ],
-  7: [
+  care_agent: [
     // Care Agent
     {
       label: "Field Users",
@@ -125,17 +156,22 @@ export const NAVIGATION_CONFIG: Record<number, NavItem[]> = {
       path: "/dashboard/payments",
       icon: <Activity size={20} />,
     },
+    {
+      label: "My Earnings",
+      path: "/dashboard/profile",
+      icon: <Activity size={20} />,
+    },
   ],
-  8: [
+  super_admin: [
     // Super Admin
     {
       label: "Admin Tools",
-      path: "/super-admin/dashboard",
+      path: "/dashboard/super-admin/dashboard",
       icon: <LayoutDashboard size={20} />,
     },
     {
       label: "Global Settings",
-      path: "/super-admin/settings",
+      path: "/dashboard/super-admin/settings",
       icon: <FileText size={20} />,
     },
   ],

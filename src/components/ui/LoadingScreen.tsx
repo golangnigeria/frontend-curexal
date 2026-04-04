@@ -31,11 +31,11 @@ export const LoadingScreen = ({ isLoading }: { isLoading: boolean }) => {
             }}
             className="relative mb-8"
           >
-            <div className="absolute inset-0 rounded-2xl bg-primary-500/20 blur-2xl animate-pulse" />
+            <div className="absolute inset-0 rounded-[28px] bg-primary-400/20 blur-3xl animate-pulse" />
             <img
               src={logoUrl}
-              alt="Curexal"
-              className="relative h-20 w-20 rounded-2xl shadow-2xl border border-slate-100"
+              alt="curexal"
+              className="relative h-24 w-24 rounded-[28px] shadow-2xl border-4 border-white object-contain p-2 bg-white"
             />
           </motion.div>
 
@@ -45,8 +45,8 @@ export const LoadingScreen = ({ isLoading }: { isLoading: boolean }) => {
             transition={{ delay: 0.2 }}
             className="text-center"
           >
-            <h1 className="text-3xl font-bold tracking-tighter text-slate-900 mb-2">
-              CUREXAL
+            <h1 className="text-4xl font-extrabold tracking-tighter text-accent-500 mb-2 lowercase">
+              curexal
             </h1>
             <div className="w-48 h-1 bg-slate-100 rounded-full overflow-hidden relative">
               <motion.div
@@ -56,11 +56,11 @@ export const LoadingScreen = ({ isLoading }: { isLoading: boolean }) => {
                   duration: 1.5,
                   repeat: Infinity,
                 }}
-                className="absolute top-0 bottom-0 w-1/2 bg-linear-to-r from-transparent via-primary-600 to-transparent"
+                className="absolute top-0 bottom-0 w-1/2 bg-linear-to-r from-transparent via-primary-400 to-transparent"
               />
             </div>
-            <p className="text-xs font-semibold text-slate-400 mt-4 tracking-[0.25em] uppercase">
-              Next-Gen Health System
+            <p className="text-[10px] font-bold text-accent-300 mt-6 tracking-[0.4em] uppercase">
+              Trust in Care
             </p>
           </motion.div>
         </motion.div>

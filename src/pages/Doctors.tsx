@@ -113,20 +113,20 @@ const Doctors = () => {
       <Navbar />
 
       {/* Hero / Header Section */}
-      <section className="pt-32 pb-12 lg:pt-48 lg:pb-20 bg-slate-900 overflow-hidden relative">
-        <div className="absolute inset-0 bg-linear-to-b from-primary-900/40 to-slate-900 z-0" />
+      <section className="pt-32 pb-12 lg:pt-48 lg:pb-20 bg-accent-500 overflow-hidden relative">
+        <div className="absolute inset-0 bg-linear-to-b from-accent-600/40 to-accent-800 z-0" />
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
-            <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-6 uppercase">
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-6 lowercase">
               World-Class <span className="text-primary-400">Experts</span>
             </h1>
-            <p className="max-w-2xl mx-auto text-slate-400 text-lg font-medium">
+            <p className="max-w-2xl mx-auto text-accent-200 text-lg font-semibold italic">
               Find and book consultations with the most trusted medical
-              professionals in the industry. Verified by Curexal.
+              professionals in the industry. Verified by curexal.
             </p>
           </motion.div>
 
@@ -147,7 +147,7 @@ const Doctors = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <button className="hidden sm:flex h-14 px-8 bg-primary-600 text-white font-bold rounded-2xl items-center justify-center gap-2 hover:bg-primary-500 transition-all active:scale-95 shadow-lg">
+            <button className="hidden sm:flex h-14 px-8 bg-primary-400 text-white font-bold rounded-2xl items-center justify-center gap-2 hover:bg-primary-500 transition-all active:scale-95 shadow-lg shadow-primary-400/20">
               <Filter size={18} />
               Filters
             </button>
@@ -179,10 +179,10 @@ const Doctors = () => {
               <motion.div
                 key={index}
                 variants={itemVariants}
-                className="group p-6 rounded-[32px] bg-white border border-slate-100 hover:border-primary-100 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(99,102,241,0.06)] flex flex-col items-center text-center"
+                className="group p-6 rounded-[32px] bg-white border border-accent-100 hover:border-primary-400 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(1,34,58,0.06)] flex flex-col items-center text-center"
               >
                 <div className="relative mb-6">
-                  <div className="absolute -inset-1 bg-linear-to-tr from-primary-600 to-indigo-600 rounded-[28px] opacity-0 group-hover:opacity-20 transition-opacity blur-lg" />
+                  <div className="absolute -inset-1 bg-linear-to-tr from-primary-400 to-accent-400 rounded-[28px] opacity-0 group-hover:opacity-20 transition-opacity blur-lg" />
                   <img
                     src={doc.image}
                     alt={doc.name}
@@ -224,7 +224,7 @@ const Doctors = () => {
                   </div>
                   <Link
                     to={user ? "/dashboard" : "/login"}
-                    className="h-10 px-4 bg-slate-900 text-white text-[10px] font-bold rounded-xl flex items-center gap-2 hover:bg-primary-600 transition-all active:scale-95"
+                    className="h-10 px-4 bg-accent-500 text-white text-[10px] font-bold rounded-xl flex items-center gap-2 hover:bg-primary-400 transition-all active:scale-95"
                   >
                     <Calendar size={14} />
                     {user ? "Book Consultation" : "Book"}

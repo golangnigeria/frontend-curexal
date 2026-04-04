@@ -1,12 +1,12 @@
 // utils/roleRedirect.ts
 
-export const ROLE_REDIRECT: Record<number, string> = {
-  8: '/super-admin/dashboard',
-  1: '/admin/dashboard',
-  3: '/doctor/dashboard',
-  4: '/pharmacy/dashboard',
-  5: '/laboratory/dashboard',
-  6: '/logistics/dashboard',
-  7: '/care-agent/dashboard',
-  2: '/dashboard', // patient (default user)
+export const ROLE_REDIRECT: Record<string, string> = {
+  super_admin: "/dashboard/super-admin/dashboard",
+  admin: "/dashboard/admin/dashboard",
+  doctor: "/dashboard",
+  pharmacy: "/dashboard/pharmacy/dashboard",
+  laboratory: "/dashboard/laboratory/dashboard",
+  logistics: "/dashboard/logistics/dashboard",
+  care_agent: "/dashboard/care-agent/dashboard",
+  patient: "/dashboard", // patient (default user)
 };
